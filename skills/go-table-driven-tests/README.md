@@ -1,10 +1,10 @@
 # Go Table-Driven Tests
 
-A Claude skill for writing idiomatic Go table-driven tests following established patterns.
+This skill helps you write idiomatic Go table-driven tests following established patterns.
 
-## About
+## What It Covers
 
-This skill helps AI agents write Go tests that follow the table-driven testing pattern used throughout the Go ecosystem. It ensures tests are:
+The table-driven testing pattern appears throughout the Go ecosystem. This skill ensures tests are:
 
 - **Maintainable** - Easy to add new test cases
 - **Readable** - Clear test names and expectations
@@ -24,7 +24,7 @@ Add the `SKILL.md` file to your project knowledge or paste its contents into the
 
 ## Usage
 
-When you need to write or modify Go tests, Claude will automatically use this skill. Trigger phrases include:
+Claude automatically uses this skill when you write or modify Go tests. Trigger phrases include:
 
 - "Write tests for this function"
 - "Add test cases for..."

@@ -5,15 +5,15 @@ description: Write Go table-driven tests following established patterns. Use whe
 
 # Go Table-Driven Tests
 
-Use when writing or modifying Go table-driven tests in this codebase. This skill ensures tests follow the established patterns.
+Use this skill when writing or modifying Go table-driven tests. It ensures tests follow established patterns.
 
 ## Core Principles
 
-- **One test function, many cases** - Define a slice of test cases and iterate with `t.Run()`
+- **One test function, many cases** - Define test cases in a slice and iterate with `t.Run()`
 - **Explicit naming** - Each case has a `name` field that becomes the subtest name
 - **Structured inputs** - Use struct fields for inputs, expected outputs, and configuration
 - **Helper functions** - Use `t.Helper()` in test helpers for proper line reporting
-- **Environment guards** - Skip integration tests when credentials aren't available
+- **Environment guards** - Skip integration tests when credentials are unavailable
 
 ## Table Structure Pattern
 
@@ -45,13 +45,13 @@ func TestFunctionName(t *testing.T) {
 
 ## Field Guidelines
 
-| Field          | Required | Purpose                                                |
-| -------------- | -------- | ------------------------------------------------------ |
-| `name`         | Yes      | Subtest name - be descriptive and specific             |
-| `input`/`args` | Varies   | Input values for the function under test               |
+| Field          | Required | Purpose                                              |
+| -------------- | -------- | ---------------------------------------------------- |
+| `name`         | Yes      | Subtest name - be descriptive and specific           |
+| `input`/`args` | Varies   | Input values for the function under test             |
 | `want`/`want*` | Varies   | Expected output values (e.g., `wantErr`, `wantResult`) |
-| `errCheck`     | No       | Custom error validation function                       |
-| `setupEnv`     | No       | Environment setup function returning cleanup           |
+| `errCheck`     | No       | Custom error validation function                     |
+| `setupEnv`     | No       | Environment setup function returning cleanup         |
 
 ## Naming Conventions
 
@@ -277,21 +277,21 @@ When writing table-driven tests:
 - [ ] Test helpers use `t.Helper()` for proper line reporting
 - [ ] Test file is `*_test.go` and lives next to the code it tests
 
-## Additional Best Practices
+## Best Practices
 
 ### Detailed Error Messages
 
-Include both the actual and expected values in error messages for clear failure diagnosis:
+Include both actual and expected values in error messages for clear failure diagnosis:
 
 ```go
 t.Errorf("got %q, want %q", actual, expected)
 ```
 
-**Note:** `t.Errorf` is not an assertion - the test continues after logging. This helps identify if failures are systematic or isolated to specific cases.
+**Note:** `t.Errorf` is not an assertion - the test continues after logging. This helps identify whether failures are systematic or isolated to specific cases.
 
-### Using Maps for Test Cases
+### Maps for Test Cases
 
-Consider using a map instead of a slice for test cases. The key benefit is that map iteration order is non-deterministic, which ensures test cases are truly independent:
+Consider using a map instead of a slice for test cases. Map iteration order is non-deterministic, which ensures test cases are truly independent:
 
 ```go
 tests := map[string]struct {
@@ -315,7 +315,7 @@ for name, tt := range tests {
 
 ### Parallel Testing
 
-To run test cases in parallel, add `t.Parallel()` calls. The loop variable is automatically captured per iteration:
+Add `t.Parallel()` calls to run test cases in parallel. The loop variable is automatically captured per iteration:
 
 ```go
 func TestFunction(t *testing.T) {
