@@ -9,7 +9,7 @@ Structured commit message format for version control that provides clear, readab
 
 ## Overview
 
-Conventional Commits is a specification for writing commit messages that provides:
+The Conventional Commits specification provides:
 
 - **Automated changelog generation** - Tools can parse commits to generate CHANGELOG.md
 - **Semantic versioning** - Commit types map to version bumps (feat → minor, breaking → major)
@@ -95,7 +95,7 @@ their API and we need to redesign integration.
 
 ## Breaking Changes
 
-Two ways to indicate breaking change:
+Indicate breaking changes in two ways:
 
 **Option 1**: Add `!` after type/scope
 
@@ -113,7 +113,7 @@ BREAKING CHANGE: endpoint no longer exists. Use newEndpoint instead.
 
 ## AI Attribution
 
-AI agents must disclose their assistance in commit footer:
+AI agents must disclose their assistance in the commit footer:
 
 ```text
 Assisted-by: [Model Name] via [Tool Name]

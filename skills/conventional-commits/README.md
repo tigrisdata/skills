@@ -1,10 +1,10 @@
 # Conventional Commits
 
-A Claude skill for authoring structured commit messages following the Conventional Commits specification.
+This skill helps you author structured commit messages following the Conventional Commits specification.
 
-## About
+## What It Covers
 
-This skill helps AI agents write git commit messages that follow the Conventional Commits specification. Commits following this format provide:
+This skill helps you write git commit messages that follow the Conventional Commits specification. Commits in this format provide:
 
 - **Automated changelog generation** - Tools can parse commits to generate CHANGELOG.md
 - **Semantic versioning** - Commit types map to version bumps (feat → minor, breaking → major)
@@ -25,7 +25,7 @@ Add the `SKILL.md` file to your project knowledge or paste its contents into the
 
 ## Usage
 
-When creating git commits, Claude will automatically use this skill. Trigger phrases include:
+Claude automatically uses this skill when you create git commits. Trigger phrases include:
 
 - "Create a commit for this change"
 - "Write a commit message"
