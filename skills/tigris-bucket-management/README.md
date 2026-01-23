@@ -1,10 +1,10 @@
 # Tigris Bucket Management
 
-A Claude skill for managing Tigris Storage buckets - creating, listing, inspecting, and deleting.
+This skill helps you manage Tigris Storage buckets - creating, listing, inspecting, and deleting.
 
-## About
+## What It Covers
 
-Tigris buckets are containers for objects. This skill covers the complete bucket lifecycle:
+Buckets are containers for objects. This skill covers the complete bucket lifecycle:
 
 - **Create** - New buckets with access controls and regions
 - **List** - Enumerate all buckets with pagination
@@ -25,7 +25,7 @@ Add the `SKILL.md` file to your project knowledge or paste its contents into the
 
 ## Usage
 
-Trigger this skill when working with buckets:
+Claude automatically uses this skill when you work with buckets. Trigger phrases include:
 
 - "Create a bucket named..."
 - "List all my buckets"

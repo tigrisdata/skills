@@ -7,7 +7,7 @@ description: Use when creating, listing, inspecting, or deleting Tigris Storage 
 
 ## Overview
 
-Tigris buckets are containers for objects. This skill covers bucket lifecycle: create, list, inspect, and delete.
+Buckets are containers for objects. This skill covers bucket lifecycle: create, list, inspect, and delete.
 
 ## Quick Reference
 
@@ -171,16 +171,16 @@ Leave empty for global bucket (recommended for most use cases).
 
 ## Common Mistakes
 
-| Mistake                                         | Fix                                     |
-| ----------------------------------------------- | --------------------------------------- |
-| Enable snapshot with non-STANDARD tier          | Snapshot requires STANDARD tier         |
-| Not checking bucket exists before delete        | Use `getBucketInfo` first               |
+| Mistake                                         | Fix                                    |
+| ----------------------------------------------- | -------------------------------------- |
+| Enable snapshot with non-STANDARD tier          | Snapshot requires STANDARD tier        |
+| Not checking bucket exists before delete        | Use `getBucketInfo` first              |
 | Trying to delete non-empty bucket without force | Use `force: true` or empty bucket first |
-| Name conflicts                                  | Bucket names must be globally unique    |
+| Name conflicts                                  | Bucket names must be globally unique   |
 
 ## Forking and Snapshots
 
-To create buckets with version control (snapshots/forking), see **tigris-snapshots-forking** skill.
+For version control (snapshots/forking), see the **tigris-snapshots-forking** skill.
 
 ## Prerequisites
 
