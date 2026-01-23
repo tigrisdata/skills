@@ -1,10 +1,10 @@
 # Installing Tigris Storage
 
-A Claude skill for setting up and configuring @tigrisdata/storage in new projects.
+This skill helps you set up and configure @tigrisdata/storage in new projects.
 
-## About
+## What It Covers
 
-Tigris Storage is a high-performance object storage system for multi-cloud environments. This skill guides through:
+Tigris Storage provides high-performance object storage for multi-cloud environments. This skill guides you through:
 
 - Installing the @tigrisdata/storage package
 - Creating Tigris account resources (buckets, access keys)
@@ -39,8 +39,9 @@ When you need to set up Tigris Storage in a project, trigger with:
 npm install @tigrisdata/storage
 
 # Set environment variables
-TIGRIS_CLIENT_ID=your_client_id
-TIGRIS_CLIENT_SECRET=your_client_secret
+TIGRIS_STORAGE_ACCESS_KEY_ID=tid_access_key_id
+TIGRIS_STORAGE_SECRET_ACCESS_KEY=tsec_secret_access_key
+TIGRIS_STORAGE_BUCKET=bucket_name
 ```
 
 ## Links

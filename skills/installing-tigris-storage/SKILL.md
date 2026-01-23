@@ -11,7 +11,7 @@ Tigris Storage is a high-performance object storage system for multi-cloud envir
 
 ## Quick Setup
 
-### 1. Install Package
+### 1. Install the Package
 
 ```bash
 npm install @tigrisdata/storage
@@ -25,7 +25,7 @@ yarn add @tigrisdata/storage
 2. Create bucket: https://console.tigris.dev/createbucket
 3. Create access key: https://console.tigris.dev/createaccesskey
 
-### 3. Configure Environment
+### 3. Configure the Environment
 
 Create `.env` in project root:
 
@@ -45,12 +45,12 @@ TIGRIS_STORAGE_BUCKET=bucket_name
 
 ## Per-Request Configuration
 
-All methods accept optional config to override environment:
+All methods accept optional config to override environment variables:
 
 ```typescript
 import { list } from "@tigrisdata/storage";
 
-// Use env defaults
+// Use environment defaults
 const result = await list();
 
 // Override bucket
@@ -70,16 +70,16 @@ const result = await list({
 
 ## Common Mistakes
 
-| Mistake                | Fix                                              |
-| ---------------------- | ------------------------------------------------ |
-| Missing `.env` file    | Create it in project root                        |
-| Wrong bucket name      | Verify at console.tigris.dev                     |
+| Mistake                | Fix                                             |
+| ---------------------- | ----------------------------------------------- |
+| Missing `.env` file    | Create it in project root                       |
+| Wrong bucket name      | Verify at console.tigris.dev                    |
 | Access key not working | Regenerate at console.tigris.dev/createaccesskey |
 
 ## Next Steps
 
 After installation:
 
-- Use **tigris-object-operations** for get/put/delete/list objects
-- Use **tigris-bucket-management** for bucket CRUD
+- Use **tigris-object-operations** to get, put, delete, and list objects
+- Use **tigris-bucket-management** for bucket CRUD operations
 - Use **tigris-snapshots-forking** for version control and forking

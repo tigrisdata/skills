@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.2",
   "organization": "Tigris Data",
   "date": "January 2026",
   "abstract": "Installation and setup guide for @tigrisdata/storage npm package, designed for AI agents and LLMs. Covers package installation for npm/yarn/pnpm, Tigris account creation, bucket and access key management through the console, environment variable configuration, TypeScript setup, and common authentication patterns. Includes step-by-step instructions for integrating Tigris Storage into new projects with proper credential management and security best practices.",
