@@ -7,24 +7,24 @@ description: Use when needing point-in-time recovery, version control for object
 
 ## Overview
 
-**Snapshots** are git tags for your entire bucket - point-in-time captures of all objects. **Forking** creates instant, isolated copies from snapshots using copy-on-write.
+**Snapshots** capture your entire bucket at a point in time. **Forking** creates instant, isolated copies from snapshots using copy-on-write.
 
-**Core principle:** Snapshots and forks give your data deletion protection. Even if you delete everything in a fork, the source bucket data remains intact.
+**Core principle:** Snapshots and forks protect your data from deletion. Even if you delete everything in a fork, the source bucket data remains intact.
 
 ## Why Snapshots Matter
 
-Object storage is now the primary data store for many systems. It needs safety features:
+Object storage serves as the primary data store for many systems. It needs safety features:
 
 - **Point-in-time recovery** - Restore after accidental deletion or corruption
 - **Version control** - Tag meaningful states like releases
 - **Reproducibility** - Recreate exact environments for debugging or testing
 - **Deletion protection** - Forks can be destroyed without affecting source
 
-Traditional object versioning only works per-object. To restore a bucket to a point in time, you'd need to check and restore each object individually. Tigris snapshots capture the entire bucket state instantly.
+Traditional object versioning only works per-object. To restore a bucket to a point in time, you must check and restore each object individually. Tigris snapshots capture the entire bucket state instantly.
 
 ## Why Forking Matters
 
-Forking creates isolated copies of buckets instantly - even for terabytes of data:
+Forking creates isolated bucket copies instantly - even for terabytes of data:
 
 - **Developer sandboxes** - Test with real production data safely
 - **AI agent environments** - Spin up agents with pre-loaded dependencies
@@ -32,7 +32,7 @@ Forking creates isolated copies of buckets instantly - even for terabytes of dat
 - **Feature branch testing** - Parallel environments for experiments
 - **Training experiments** - Fork datasets to test without affecting source
 
-**How it works:** Tigris uses immutable objects with backwards-ordered timestamps. Forks read from parent snapshot until new data overwrites. This makes forking essentially free - no data copying required.
+**How it works:** Tigris uses immutable objects with backwards-ordered timestamps. Forks read from the parent snapshot until new data overwrites. This makes forking essentially free - no data copying required.
 
 ## Quick Reference
 
@@ -176,7 +176,7 @@ const devBucket = await createBucket(`dev-${developerName}`, {
   sourceBucketName: "production",
   sourceBucketSnapshot: "...",
 });
-// Developer can test/modify freely
+// Developer can test and modify freely
 ```
 
 ### AI Agent Environments
@@ -198,7 +198,7 @@ await createBucket(agentBucket, {
   sourceBucketSnapshot: snapshot.data?.snapshotVersion,
 });
 
-// Agent has everything, can modify freely
+// Agent has everything and can modify freely
 await startAgent(agentBucket);
 ```
 
@@ -220,16 +220,16 @@ const rollback = await createBucket("production-restored", {
 
 ## Common Mistakes
 
-| Mistake                                  | Fix                                         |
-| ---------------------------------------- | ------------------------------------------- |
-| Snapshotting non-snapshot-enabled bucket | Recreate bucket with `enableSnapshot: true` |
-| Expecting fork to affect source          | Forks are isolated - source unchanged       |
-| Not naming snapshots                     | Names make snapshots discoverable           |
-| Using wrong storage tier                 | Snapshot buckets must be STANDARD tier      |
+| Mistake                                  | Fix                                          |
+| ---------------------------------------- | -------------------------------------------- |
+| Snapshotting non-snapshot-enabled bucket | Recreate bucket with `enableSnapshot: true`  |
+| Expecting fork to affect source          | Forks are isolated - source remains unchanged|
+| Not naming snapshots                     | Names make snapshots discoverable            |
+| Using wrong storage tier                 | Snapshot buckets must use STANDARD tier      |
 
 ## Limitations
 
-- Existing buckets cannot be snapshot-enabled (must create new)
+- Existing buckets cannot be snapshot-enabled (must create new bucket)
 - Snapshot buckets require STANDARD storage tier
 - Snapshot buckets don't support lifecycle transitions or TTL
 
@@ -237,7 +237,7 @@ const rollback = await createBucket("production-restored", {
 
 A snapshot is a single 64-bit integer representing nanoseconds since Unix epoch. Tigris stores objects with reverse-ordered timestamps, so the most recent version sorts first. When you snapshot, Tigris records the current time. Reading from a snapshot queries for the newest object version before that timestamp.
 
-Forking adds recursive indirection: child bucket objects override parent, but missing objects recurse through parent snapshot. This makes forking instant - no data copying, just metadata pointers.
+Forking adds recursive indirection: child bucket objects override the parent, but missing objects recurse through the parent snapshot. This makes forking instant - no data copying, just metadata pointers.
 
 ## Prerequisites
 

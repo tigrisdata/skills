@@ -1,10 +1,10 @@
 # Tigris Snapshots and Forking
 
-A Claude skill for point-in-time recovery, version control, and creating isolated bucket copies.
+This skill helps you implement point-in-time recovery, version control, and isolated bucket copies.
 
-## About
+## What It Covers
 
-**Snapshots** are git tags for your entire bucket - point-in-time captures of all objects. **Forking** creates instant, isolated copies from snapshots using copy-on-write.
+**Snapshots** capture your entire bucket at a point in time. **Forking** creates instant, isolated copies from snapshots using copy-on-write.
 
 Use cases:
 
@@ -28,7 +28,7 @@ Add the `SKILL.md` file to your project knowledge or paste its contents into the
 
 ## Usage
 
-Trigger this skill for snapshots and forking:
+Claude automatically uses this skill for snapshots and forking. Trigger phrases include:
 
 - "Create a snapshot of this bucket"
 - "Fork this bucket for testing"
