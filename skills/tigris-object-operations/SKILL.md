@@ -7,7 +7,7 @@ description: Use when working with objects in Tigris Storage - uploading, downlo
 
 ## Overview
 
-Tigris Storage provides simple object operations: upload (put), download (get), delete (remove), list, metadata (head), and presigned URLs.
+Tigris Storage provides object operations: upload (put), download (get), delete (remove), list, metadata (head), and presigned URLs.
 
 All methods return `TigrisStorageResponse<T, E>` - check `error` property first.
 
@@ -186,12 +186,12 @@ const result = await getPresignedUrl("upload.txt", {
 
 ## Common Mistakes
 
-| Mistake                      | Fix                                                   |
-| ---------------------------- | ----------------------------------------------------- |
-| Not checking `error` first   | Always check `if (result.error)` before `result.data` |
-| Wrong format in `get()`      | Use 'string', 'file', or 'stream'                     |
-| Forgetting `multipart: true` | Enable for files >100MB                               |
-| Ignoring pagination          | Use `hasMore` and `paginationToken`                   |
+| Mistake                      | Fix                                                  |
+| ---------------------------- | ---------------------------------------------------- |
+| Not checking `error` first   | Always check `if (result.error)` before `result.data`|
+| Wrong format in `get()`      | Use 'string', 'file', or 'stream'                    |
+| Forgetting `multipart: true` | Enable for files >100MB                              |
+| Ignoring pagination          | Use `hasMore` and `paginationToken`                  |
 
 ## Client-Side Uploads
 
@@ -208,4 +208,4 @@ const result = await upload(file.name, file, {
 });
 ```
 
-See installing-tigris-storage for initial setup.
+For initial setup, see **installing-tigris-storage**.

@@ -1,10 +1,10 @@
 # Tigris Object Operations
 
-A Claude skill for working with objects in Tigris Storage - uploading, downloading, deleting, listing, and generating presigned URLs.
+This skill helps you work with objects in Tigris Storage - uploading, downloading, deleting, listing, and generating presigned URLs.
 
-## About
+## What It Covers
 
-This skill covers all object operations in Tigris Storage:
+All object operations in Tigris Storage:
 
 - **Upload** - Put objects with access controls and content types
 - **Download** - Get objects as string, file, or stream
@@ -27,7 +27,7 @@ Add the `SKILL.md` file to your project knowledge or paste its contents into the
 
 ## Usage
 
-Trigger this skill for object operations:
+Claude automatically uses this skill for object operations. Trigger phrases include:
 
 - "Upload this file to Tigris"
 - "Download object from..."
