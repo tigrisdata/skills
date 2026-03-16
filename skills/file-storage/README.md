@@ -4,7 +4,7 @@ Get started with Tigris file storage. Walks through CLI setup (bucket, access ke
 
 ## What It Covers
 
-- **CLI setup** — authenticate, create bucket, create access key, assign key to bucket
+- **CLI setup** — install CLI, authenticate, create bucket, create access key, assign key to bucket with Editor or ReadOnly role
 - **SDK reference** — `put`, `get`, `remove`, `list`, `head`, `getPresignedUrl` with full signatures and examples
 - **Client-side uploads** — browser-direct uploads via `handleClientUpload` + `@tigrisdata/storage/client`
 - **React component** — drop-in `<Uploader>` from `@tigrisdata/react`
@@ -35,15 +35,15 @@ This skill activates when you mention:
 
 ## Example Prompts
 
-```
+```text
 Set up Tigris storage for my Next.js app
 ```
 
-```
+```text
 Upload user avatars to Tigris
 ```
 
-```
+```text
 Add client-side file uploads with progress tracking
 ```
 

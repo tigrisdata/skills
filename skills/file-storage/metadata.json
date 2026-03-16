@@ -1,8 +1,8 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "organization": "Tigris Data",
   "date": "March 2026",
-  "abstract": "Get started with Tigris file storage. Walks through CLI setup (authenticate, create bucket, create and assign access keys, configure environment), then covers the @tigrisdata/storage SDK for uploading, downloading, deleting, listing files, presigned URLs, and client-side browser uploads. Includes common patterns like avatar uploads, API route file serving, and the handleClientUpload presigned URL flow.",
+  "abstract": "Get started with Tigris file storage. Walks through CLI setup (install via npm, authenticate, create bucket, create and assign access keys, configure environment), then covers the @tigrisdata/storage SDK for uploading, downloading, deleting, listing files, presigned URLs, and client-side browser uploads. Documents TigrisStorageConfig for per-call credential and bucket overrides, Editor vs ReadOnly access key roles, and includes common patterns like avatar uploads, API route file serving, and the handleClientUpload presigned URL flow.",
   "references": [
     "https://www.tigrisdata.com/docs/sdks/tigris/",
     "https://www.tigrisdata.com/docs/sdks/tigris/client-uploads/",

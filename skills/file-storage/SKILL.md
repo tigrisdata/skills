@@ -9,60 +9,58 @@ Store and serve files with Tigris Object Storage. Covers CLI setup (bucket, acce
 
 ## Quick Start
 
-**1. Authenticate & Create Bucket**
-
 ```bash
+# 1. Install CLI & authenticate
+npm install -g @tigrisdata/cli
 tigris login
+
+# 2. Create bucket and access key
 tigris buckets create my-app-uploads
-```
-
-**2. Create Access Key & Configure**
-
-```bash
 tigris access-keys create "my-app-uploads-key"
-# Save the Secret Access Key — it is only shown once
+# ⚠ Save the Secret Access Key — shown only once
 tigris access-keys assign tid_xxx --bucket my-app-uploads --role Editor
+
+# 3. Install SDK
+npm install @tigrisdata/storage
 ```
 
-**3. Create `.env`**
-
 ```bash
+# .env
 TIGRIS_STORAGE_ACCESS_KEY_ID=tid_xxx
 TIGRIS_STORAGE_SECRET_ACCESS_KEY=tsec_yyy
 TIGRIS_STORAGE_ENDPOINT=https://t3.storage.dev
-```
-
-**4. Install & Upload**
-
-```bash
-npm install @tigrisdata/storage
+TIGRIS_STORAGE_BUCKET=my-app-uploads
 ```
 
 ```typescript
 import { put } from "@tigrisdata/storage";
 
-const result = await put("avatars/user-123.jpg", file, {
-  access: "public",
-});
-
-if (result.error) {
-  console.error(result.error);
-} else {
-  console.log(result.data?.url);
-}
+const result = await put("avatars/user-123.jpg", file, { access: "public" });
+if (result.error) throw result.error;
+console.log(result.data?.url);
 ```
 
-**Critical points:**
-
-- All SDK methods return `TigrisStorageResponse<T, E>` — always check `result.error` before `result.data`
-- Use `handleClientUpload` + `upload()` for browser uploads — don't route file bytes through your server
-- Set correct `access` level (`public` for CDN-served assets, `private` for authenticated access)
+See **Getting Started with CLI** below for detailed steps.
 
 ---
 
 ## Getting Started with CLI
 
-### Step 1: Authenticate
+### Step 1: Install CLI
+
+```bash
+npm install -g @tigrisdata/cli
+```
+
+Verify the installation:
+
+```bash
+tigris --version
+```
+
+`t3` is an alias for `tigris` — all commands work with either.
+
+### Step 2: Authenticate
 
 ```bash
 tigris login
@@ -80,7 +78,7 @@ For CI/CD or non-interactive environments:
 tigris configure --access-key <key> --access-secret <secret>
 ```
 
-### Step 2: Create Bucket
+### Step 3: Create Bucket
 
 ```bash
 tigris buckets create my-app-uploads
@@ -90,11 +88,9 @@ Key points:
 
 - Buckets are **private** by default. Use `--public` for publicly readable objects.
 - Buckets are **global** by default. Use `--locations` to pin to specific regions.
-- Run `tigris buckets create help` to see all options.
-- `t3` is an alias for `tigris` — all commands work with either (`t3 buckets create`, etc.).
-- Type `help` after any command to see its options (e.g., `tigris cp help`).
+- Type `help` after any command to see its options (e.g., `tigris buckets create help`).
 
-### Step 3: Create Access Key
+### Step 4: Create Access Key
 
 ```bash
 tigris access-keys create "my-app-uploads-key"
@@ -104,7 +100,7 @@ This outputs an Access Key ID (`tid_xxx`) and Secret Access Key (`tsec_yyy`).
 
 **The Secret Access Key is only shown once.** Copy it immediately. The Name field is only for human identification — it has no functional impact.
 
-### Step 4: Configure Environment
+### Step 5: Configure Environment
 
 Create `.env` in your project root:
 
@@ -112,15 +108,23 @@ Create `.env` in your project root:
 TIGRIS_STORAGE_ACCESS_KEY_ID=tid_xxx
 TIGRIS_STORAGE_SECRET_ACCESS_KEY=tsec_yyy
 TIGRIS_STORAGE_ENDPOINT=https://t3.storage.dev
+TIGRIS_STORAGE_BUCKET=my-app-uploads
 ```
 
-This `.env` is used by the `@tigrisdata/storage` SDK.
+`TIGRIS_STORAGE_BUCKET` sets the default bucket for all SDK calls. Add `.env` to `.gitignore` — never commit credentials.
 
-### Step 5: Assign Access Key to Bucket
+### Step 6: Assign Access Key to Bucket
 
 ```bash
 tigris access-keys assign tid_xxx --bucket my-app-uploads --role Editor
 ```
+
+**Roles:**
+
+| Role       | Permissions                        | Use when                                 |
+| ---------- | ---------------------------------- | ---------------------------------------- |
+| `Editor`   | Read + write + delete objects      | App servers that upload/delete files     |
+| `ReadOnly` | Read objects only                  | Apps that only serve/download files      |
 
 Now you have:
 
@@ -129,7 +133,7 @@ Now you have:
 - The key assigned to the bucket with Editor role
 - A `.env` file ready for the SDK
 
-### Step 6: Install SDK
+### Step 7: Install SDK
 
 ```bash
 npm install @tigrisdata/storage
@@ -152,6 +156,29 @@ if (result.error) {
   return;
 }
 console.log(result.data);
+```
+
+### config — Override Default Configuration
+
+Every method accepts an optional `config` parameter of type `TigrisStorageConfig`:
+
+```typescript
+type TigrisStorageConfig = {
+  bucket?: string;          // Override TIGRIS_STORAGE_BUCKET
+  accessKeyId?: string;     // Override TIGRIS_STORAGE_ACCESS_KEY_ID
+  secretAccessKey?: string; // Override TIGRIS_STORAGE_SECRET_ACCESS_KEY
+  endpoint?: string;        // Override TIGRIS_STORAGE_ENDPOINT
+};
+```
+
+Use `config` to target a different bucket or use different credentials per call:
+
+```typescript
+// Upload to a different bucket
+await put("report.pdf", data, { config: { bucket: "reports-archive" } });
+
+// Use a separate read-only key for downloads
+await get("file.txt", "string", { config: { accessKeyId: "tid_ro", secretAccessKey: "tsec_ro" } });
 ```
 
 ### put — Upload
@@ -192,13 +219,13 @@ const result = await put("config.json", data, {
 | Option             | Values              | Default    | Purpose                       |
 | ------------------ | ------------------- | ---------- | ----------------------------- |
 | access             | `public`, `private` | `private`  | Object visibility             |
-| addRandomSuffix    | boolean             | `false`    | Append random string to path  |
+| addRandomSuffix    | boolean             | `false`    | Append random suffix to avoid collisions on user-uploaded files with the same name |
 | allowOverwrite     | boolean             | `true`     | Allow replacing existing file |
 | contentType        | MIME string         | inferred   | Content type header           |
 | contentDisposition | `inline`,`attachment`| `inline`  | Browser display behavior      |
 | multipart          | boolean             | `false`    | Enable for large files        |
 | onUploadProgress   | callback            | —          | `{loaded, total, percentage}` |
-| config             | object              | —          | Override bucket/credentials   |
+| config             | `TigrisStorageConfig` | —        | Override bucket/credentials (see config section above) |
 
 **Response data:** `{ url, path, size, contentType, contentDisposition, modified }`
 
@@ -236,7 +263,7 @@ const result = await get("videos/demo.mp4", "stream");
 | contentDisposition | `inline`,`attachment`| `inline` | Display vs download   |
 | contentType        | MIME string          | from upload | Override content type |
 | encoding           | string               | `utf-8`  | Text encoding         |
-| config             | object               | —        | Override bucket/creds |
+| config             | `TigrisStorageConfig` | —       | Override bucket/credentials (see config section above) |
 
 ### remove — Delete
 
@@ -291,7 +318,7 @@ while (page.data?.hasMore) {
 | delimiter       | Group keys (e.g., `"/"` for folders)   |
 | limit           | Max objects per page (default: 100)    |
 | paginationToken | Continue from previous page            |
-| config          | Override bucket/credentials            |
+| config          | `TigrisStorageConfig` — override bucket/credentials (see config section above) |
 
 **Response data:** `{ items, paginationToken, hasMore }`
 
@@ -341,7 +368,7 @@ const result = await getPresignedUrl("uploads/photo.jpg", {
 | operation   | `get`,`put` | —       | URL purpose       |
 | expiresIn   | seconds     | `3600`  | Expiration time   |
 | contentType | MIME string | —       | Required for PUT  |
-| config      | object      | —       | Override bucket   |
+| config      | `TigrisStorageConfig` | — | Override bucket/credentials (see config section above) |
 
 **Response data:** `{ url, method, expiresIn }`
 
