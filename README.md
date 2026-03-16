@@ -57,6 +57,22 @@ Upload, download, delete, list, and inspect objects in Tigris Storage. Generate 
 - `head(path, options)` - get object metadata
 - `getPresignedUrl(path, options)` - generate temporary access URLs
 
+### file-storage
+
+Get started with Tigris file storage. CLI setup (bucket, access keys, environment) and `@tigrisdata/storage` SDK for application code.
+
+**Use when:**
+- "File storage", "upload file", "store files"
+- "Tigris", "set up Tigris", "tigris bucket"
+- "Client upload", "presigned URL"
+
+**What's covered:**
+- CLI setup: authenticate, create bucket, create and assign access keys
+- SDK reference: `put`, `get`, `remove`, `list`, `head`, `getPresignedUrl`
+- Client-side browser uploads via `handleClientUpload`
+- Common patterns: avatar upload, API route file serving
+- Critical rules and known issues prevention
+
 ### tigris-snapshots-forking
 
 Point-in-time recovery and bucket forking for version control, testing, and developer sandboxes.

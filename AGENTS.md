@@ -14,6 +14,7 @@ A collection of skills for Claude.ai and Claude Code for working with Tigris obj
 | `tigris-bucket-management`  | Creating, listing, inspecting, and deleting Tigris buckets        | User mentions "bucket", "create bucket", "list buckets"                         |
 | `tigris-object-operations`  | Uploading, downloading, deleting, listing objects, presigned URLs | User mentions "upload", "download", "put object", "get object", "presigned URL" |
 | `tigris-snapshots-forking`  | Point-in-time recovery, bucket forking for testing                | User mentions "snapshot", "fork", "point-in-time recovery", "restore"           |
+| `file-storage`              | CLI setup and SDK reference for Tigris file storage               | User mentions "file storage", "upload file", "tigris", "client upload"         |
 | `go-table-driven-tests`     | Writing Go table-driven tests following established patterns      | User mentions "Go test", "table-driven test", "test coverage" in Go codebase    |
 
 ## Creating a New Skill

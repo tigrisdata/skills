@@ -1,0 +1,500 @@
+---
+name: file-storage
+description: Use when working with Tigris file storage - uploading, downloading, deleting, listing files, presigned URLs, client uploads, or setting up Tigris CLI and SDK
+---
+
+# Tigris File Storage
+
+Store and serve files with Tigris Object Storage. Covers CLI setup (bucket, access keys, auth) and the `@tigrisdata/storage` SDK for application code.
+
+## Quick Start
+
+**1. Authenticate & Create Bucket**
+
+```bash
+tigris login
+tigris buckets create my-app-uploads
+```
+
+**2. Create Access Key & Configure**
+
+```bash
+tigris access-keys create "my-app-uploads-key"
+# Save the Secret Access Key — it is only shown once
+tigris access-keys assign tid_xxx --bucket my-app-uploads --role Editor
+```
+
+**3. Create `.env`**
+
+```bash
+TIGRIS_STORAGE_ACCESS_KEY_ID=tid_xxx
+TIGRIS_STORAGE_SECRET_ACCESS_KEY=tsec_yyy
+TIGRIS_STORAGE_ENDPOINT=https://t3.storage.dev
+```
+
+**4. Install & Upload**
+
+```bash
+npm install @tigrisdata/storage
+```
+
+```typescript
+import { put } from "@tigrisdata/storage";
+
+const result = await put("avatars/user-123.jpg", file, {
+  access: "public",
+});
+
+if (result.error) {
+  console.error(result.error);
+} else {
+  console.log(result.data?.url);
+}
+```
+
+**Critical points:**
+
+- All SDK methods return `TigrisStorageResponse<T, E>` — always check `result.error` before `result.data`
+- Use `handleClientUpload` + `upload()` for browser uploads — don't route file bytes through your server
+- Set correct `access` level (`public` for CDN-served assets, `private` for authenticated access)
+
+---
+
+## Getting Started with CLI
+
+### Step 1: Authenticate
+
+```bash
+tigris login
+```
+
+Opens browser for OAuth. After login, verify with:
+
+```bash
+tigris whoami
+```
+
+For CI/CD or non-interactive environments:
+
+```bash
+tigris configure --access-key <key> --access-secret <secret>
+```
+
+### Step 2: Create Bucket
+
+```bash
+tigris buckets create my-app-uploads
+```
+
+Key points:
+
+- Buckets are **private** by default. Use `--public` for publicly readable objects.
+- Buckets are **global** by default. Use `--locations` to pin to specific regions.
+- Run `tigris buckets create help` to see all options.
+- `t3` is an alias for `tigris` — all commands work with either (`t3 buckets create`, etc.).
+- Type `help` after any command to see its options (e.g., `tigris cp help`).
+
+### Step 3: Create Access Key
+
+```bash
+tigris access-keys create "my-app-uploads-key"
+```
+
+This outputs an Access Key ID (`tid_xxx`) and Secret Access Key (`tsec_yyy`).
+
+**The Secret Access Key is only shown once.** Copy it immediately. The Name field is only for human identification — it has no functional impact.
+
+### Step 4: Configure Environment
+
+Create `.env` in your project root:
+
+```bash
+TIGRIS_STORAGE_ACCESS_KEY_ID=tid_xxx
+TIGRIS_STORAGE_SECRET_ACCESS_KEY=tsec_yyy
+TIGRIS_STORAGE_ENDPOINT=https://t3.storage.dev
+```
+
+This `.env` is used by the `@tigrisdata/storage` SDK.
+
+### Step 5: Assign Access Key to Bucket
+
+```bash
+tigris access-keys assign tid_xxx --bucket my-app-uploads --role Editor
+```
+
+Now you have:
+
+- A bucket (`my-app-uploads`)
+- An access key (`tid_xxx` / `tsec_yyy`)
+- The key assigned to the bucket with Editor role
+- A `.env` file ready for the SDK
+
+### Step 6: Install SDK
+
+```bash
+npm install @tigrisdata/storage
+# or
+yarn add @tigrisdata/storage
+```
+
+Supports ES Modules and CommonJS.
+
+---
+
+## SDK Reference
+
+All methods return `TigrisStorageResponse<T, E>`. Always check `error` first:
+
+```typescript
+const result = await put("file.txt", "hello");
+if (result.error) {
+  console.error(result.error);
+  return;
+}
+console.log(result.data);
+```
+
+### put — Upload
+
+```typescript
+put(path: string, body: string | ReadableStream | Blob | Buffer, options?: PutOptions)
+```
+
+```typescript
+import { put } from "@tigrisdata/storage";
+
+// Simple text upload
+const result = await put("notes/hello.txt", "Hello, World!");
+
+// Image with public access
+const result = await put("avatars/user-123.jpg", file, {
+  access: "public",
+  contentType: "image/jpeg",
+  addRandomSuffix: false,
+});
+
+// Large file with multipart and progress
+const result = await put("videos/demo.mp4", fileStream, {
+  multipart: true,
+  onUploadProgress: ({ loaded, total, percentage }) => {
+    console.log(`${loaded}/${total} bytes (${percentage}%)`);
+  },
+});
+
+// Prevent accidental overwrite
+const result = await put("config.json", data, {
+  allowOverwrite: false,
+});
+```
+
+**Put options:**
+
+| Option             | Values              | Default    | Purpose                       |
+| ------------------ | ------------------- | ---------- | ----------------------------- |
+| access             | `public`, `private` | `private`  | Object visibility             |
+| addRandomSuffix    | boolean             | `false`    | Append random string to path  |
+| allowOverwrite     | boolean             | `true`     | Allow replacing existing file |
+| contentType        | MIME string         | inferred   | Content type header           |
+| contentDisposition | `inline`,`attachment`| `inline`  | Browser display behavior      |
+| multipart          | boolean             | `false`    | Enable for large files        |
+| onUploadProgress   | callback            | —          | `{loaded, total, percentage}` |
+| config             | object              | —          | Override bucket/credentials   |
+
+**Response data:** `{ url, path, size, contentType, contentDisposition, modified }`
+
+### get — Download
+
+```typescript
+get(path: string, format: "string" | "file" | "stream", options?: GetOptions)
+```
+
+```typescript
+import { get } from "@tigrisdata/storage";
+
+// Read as string (text, JSON)
+const result = await get("notes/hello.txt", "string");
+console.log(result.data); // "Hello, World!"
+
+// Serve as file (for API routes)
+const result = await get("avatars/user-123.jpg", "file", {
+  contentDisposition: "inline",
+});
+
+// Trigger browser download
+const result = await get("reports/q4.pdf", "file", {
+  contentDisposition: "attachment",
+});
+
+// Stream large files
+const result = await get("videos/demo.mp4", "stream");
+```
+
+**Get options:**
+
+| Option             | Values               | Default  | Purpose               |
+| ------------------ | -------------------- | -------- | --------------------- |
+| contentDisposition | `inline`,`attachment`| `inline` | Display vs download   |
+| contentType        | MIME string          | from upload | Override content type |
+| encoding           | string               | `utf-8`  | Text encoding         |
+| config             | object               | —        | Override bucket/creds |
+
+### remove — Delete
+
+```typescript
+remove(path: string, options?: RemoveOptions)
+```
+
+```typescript
+import { remove } from "@tigrisdata/storage";
+
+const result = await remove("notes/hello.txt");
+if (result.error) {
+  console.error(result.error);
+}
+```
+
+### list — List Objects
+
+```typescript
+list(options?: ListOptions)
+```
+
+```typescript
+import { list } from "@tigrisdata/storage";
+
+// List all objects
+const result = await list();
+console.log(result.data?.items);
+
+// Filter by prefix
+const result = await list({ prefix: "avatars/" });
+
+// Paginate through all objects
+const allFiles = [];
+let page = await list({ limit: 100 });
+allFiles.push(...(page.data?.items ?? []));
+
+while (page.data?.hasMore) {
+  page = await list({
+    limit: 100,
+    paginationToken: page.data.paginationToken,
+  });
+  allFiles.push(...(page.data?.items ?? []));
+}
+```
+
+**List options:**
+
+| Option          | Purpose                                |
+| --------------- | -------------------------------------- |
+| prefix          | Filter keys starting with this string  |
+| delimiter       | Group keys (e.g., `"/"` for folders)   |
+| limit           | Max objects per page (default: 100)    |
+| paginationToken | Continue from previous page            |
+| config          | Override bucket/credentials            |
+
+**Response data:** `{ items, paginationToken, hasMore }`
+
+### head — Object Metadata
+
+```typescript
+head(path: string, options?: HeadOptions)
+```
+
+```typescript
+import { head } from "@tigrisdata/storage";
+
+const result = await head("avatars/user-123.jpg");
+if (!result.error) {
+  console.log(result.data);
+  // { path, size, contentType, contentDisposition, modified, url }
+}
+```
+
+### getPresignedUrl — Temporary URLs
+
+```typescript
+getPresignedUrl(path: string, options: GetPresignedUrlOptions)
+```
+
+```typescript
+import { getPresignedUrl } from "@tigrisdata/storage";
+
+// Temporary download link (1 hour)
+const result = await getPresignedUrl("reports/q4.pdf", {
+  operation: "get",
+  expiresIn: 3600,
+});
+console.log(result.data?.url);
+
+// Temporary upload link (10 minutes)
+const result = await getPresignedUrl("uploads/photo.jpg", {
+  operation: "put",
+  expiresIn: 600,
+});
+```
+
+**Presigned URL options:**
+
+| Option      | Values      | Default | Purpose           |
+| ----------- | ----------- | ------- | ----------------- |
+| operation   | `get`,`put` | —       | URL purpose       |
+| expiresIn   | seconds     | `3600`  | Expiration time   |
+| contentType | MIME string | —       | Required for PUT  |
+| config      | object      | —       | Override bucket   |
+
+**Response data:** `{ url, method, expiresIn }`
+
+---
+
+## Client-Side Uploads
+
+Upload files directly from the browser to Tigris without routing bytes through your server. Uses presigned URLs under the hood.
+
+### Server — Handle Upload Requests
+
+```typescript
+// app/api/upload/route.ts
+import { NextRequest, NextResponse } from "next/server";
+import { handleClientUpload } from "@tigrisdata/storage";
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { data, error } = await handleClientUpload(body);
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ data });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to process upload request" },
+      { status: 500 },
+    );
+  }
+}
+```
+
+### Client — Direct Upload
+
+```typescript
+"use client";
+
+import { upload } from "@tigrisdata/storage/client";
+import { useState } from "react";
+
+export default function FileUpload() {
+  const [progress, setProgress] = useState(0);
+  const [url, setUrl] = useState<string | null>(null);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const result = await upload(file.name, file, {
+      url: "/api/upload",
+      access: "private",
+      multipart: true,
+      partSize: 10 * 1024 * 1024,
+      onUploadProgress: ({ percentage }) => {
+        setProgress(percentage);
+      },
+    });
+
+    setUrl(result.url);
+  };
+
+  return (
+    <>
+      <input type="file" onChange={handleFileChange} />
+      {progress > 0 && progress < 100 && <div>{progress}%</div>}
+      {url && <div>Uploaded: {url}</div>}
+    </>
+  );
+}
+```
+
+**Client upload options:**
+
+| Option           | Required | Purpose                              |
+| ---------------- | -------- | ------------------------------------ |
+| url              | Yes      | Backend endpoint for presigned URLs  |
+| access           | No       | `public` or `private` (default)      |
+| multipart        | No       | Enable for large files               |
+| partSize         | No       | Bytes per part (default: 5 MiB)      |
+| concurrency      | No       | Parallel part uploads (default: 4)   |
+| contentType      | No       | MIME type                            |
+| onUploadProgress | No       | `{loaded, total, percentage}`        |
+
+### React Component (Optional)
+
+`npm install @tigrisdata/react` provides a drop-in `<Uploader>` component with file selection, progress, and error handling built in. See `@tigrisdata/react` docs for usage.
+
+---
+
+## Critical Rules
+
+**Always:** Check `result.error` before `result.data` | Use `handleClientUpload` for browser uploads (don't route bytes through server) | Set `access: "public"` explicitly for public files | Use `multipart: true` for files over 100MB | Paginate `list()` with `hasMore` + `paginationToken` | Delete old files when replacing (no auto-cleanup) | Set `contentType` explicitly when it matters
+
+**Never:** Expose access keys to the client (use `handleClientUpload` + `upload()` from `@tigrisdata/storage/client`) | Skip error checking | Use generic paths like `file.jpg` (use `avatars/${userId}.jpg` or timestamps) | Forget to save the Secret Access Key on creation (shown only once)
+
+---
+
+## Known Issues
+
+| Problem                        | Cause & Fix                                                                             |
+| ------------------------------ | --------------------------------------------------------------------------------------- |
+| "Access denied" on upload      | Key not assigned to bucket. Run `tigris access-keys assign tid_xxx --bucket <name> --role Editor` |
+| "Bucket not found" from SDK    | Wrong bucket name in `.env`. Verify with `tigris buckets list`                          |
+| Secret Access Key lost         | Cannot recover. Create new: `tigris access-keys create "new-key"` and reassign          |
+| Files not publicly accessible  | Bucket is private by default. Use `--public` flag or `access: "public"` on `put()`      |
+| Upload hangs on large files    | Add `multipart: true` to put options for files over 100MB                               |
+| List returns incomplete results| Default limit is 100. Use `hasMore` + `paginationToken` to paginate                    |
+| Client upload fails (CORS/500) | Server route must use `handleClientUpload` from `@tigrisdata/storage`                   |
+
+---
+
+## CLI Quick Reference
+
+`t3` is an alias for `tigris`. Type `help` after any command for options.
+
+```bash
+# Auth
+tigris login
+tigris whoami
+
+# Buckets
+tigris buckets create <name> [--public] [--locations <region>]
+tigris buckets list
+tigris buckets delete <name>
+
+# Access keys
+tigris access-keys create "<name>"
+tigris access-keys assign <tid_xxx> --bucket <name> --role Editor
+
+# Objects
+tigris cp <src> <dest> [-r]         # Upload/download/copy
+tigris mv <src> <dest> [-rf]        # Move or rename
+tigris rm <path> [-rf]              # Delete
+tigris ls [bucket/prefix]           # List
+tigris stat <path>                  # Metadata
+tigris presign <path>               # Presigned URL
+tigris touch <path>                 # Create empty object
+```
+
+Remote paths use `t3://` prefix: `t3://my-bucket/path/file.txt`
+
+---
+
+## Related Skills
+
+- **installing-tigris-storage** — SDK environment setup details
+- **tigris-bucket-management** — Advanced bucket options (regions, tiers, snapshots)
+- **tigris-object-operations** — Detailed SDK function reference
+- **tigris-snapshots-forking** — Point-in-time recovery and bucket forking
+
+## Official Documentation
+
+- SDK: https://www.tigrisdata.com/docs/sdks/tigris/
+- Client Uploads: https://www.tigrisdata.com/docs/sdks/tigris/client-uploads/
+- Examples: https://www.tigrisdata.com/docs/sdks/tigris/examples/
