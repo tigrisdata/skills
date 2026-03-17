@@ -35,9 +35,13 @@ TIGRIS_STORAGE_BUCKET=my-app-uploads
 ```typescript
 import { put } from "@tigrisdata/storage";
 
-const result = await put("avatars/user-123.jpg", file, { access: "public" });
+// Files are private by default — only authenticated requests can access them
+const result = await put("avatars/user-123.jpg", file);
 if (result.error) throw result.error;
 console.log(result.data?.url);
+
+// Use access: "public" only when anonymous users need direct URL access
+// const result = await put("avatars/user-123.jpg", file, { access: "public" });
 ```
 
 See **Getting Started with CLI** below for detailed steps.
@@ -461,7 +465,7 @@ export default function FileUpload() {
 
 ## Critical Rules
 
-**Always:** Check `result.error` before `result.data` | Use `handleClientUpload` for browser uploads (don't route bytes through server) | Set `access: "public"` explicitly for public files | Use `multipart: true` for files over 100MB | Paginate `list()` with `hasMore` + `paginationToken` | Delete old files when replacing (no auto-cleanup) | Set `contentType` explicitly when it matters
+**Always:** Check `result.error` before `result.data` | Upload files as `private` by default — only set `access: "public"` when anonymous users need direct URL access | Use `handleClientUpload` for browser uploads (don't route bytes through server) | Use `multipart: true` for files over 100MB | Paginate `list()` with `hasMore` + `paginationToken` | Delete old files when replacing (no auto-cleanup) | Set `contentType` explicitly when it matters
 
 **Never:** Expose access keys to the client (use `handleClientUpload` + `upload()` from `@tigrisdata/storage/client`) | Skip error checking | Use generic paths like `file.jpg` (use `avatars/${userId}.jpg` or timestamps) | Forget to save the Secret Access Key on creation (shown only once)
 
