@@ -519,7 +519,6 @@ Remote paths use `t3://` prefix: `t3://my-bucket/path/file.txt`
 
 ## Related Skills
 
-- **installing-tigris-storage** — SDK environment setup details
 - **tigris-bucket-management** — Advanced bucket options (regions, tiers, snapshots)
 - **tigris-object-operations** — Detailed SDK function reference
 - **tigris-snapshots-forking** — Point-in-time recovery and bucket forking

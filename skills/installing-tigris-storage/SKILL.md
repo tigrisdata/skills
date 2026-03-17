@@ -5,81 +5,46 @@ description: Use when setting up @tigrisdata/storage in a new project or configu
 
 # Installing Tigris Storage
 
-## Overview
+> **This skill has been superseded by the `file-storage` skill**, which covers CLI setup, SDK usage, uploads, downloads, presigned URLs, and client-side uploads in a single skill.
 
-Tigris Storage is a high-performance object storage system for multi-cloud environments. This skill covers installation and configuration.
-
-## Quick Setup
-
-### 1. Install the Package
+## Install the Updated Skill
 
 ```bash
+npx skills add https://github.com/tigrisdata/skills --skill file-storage
+```
+
+## Quick Start
+
+```bash
+# 1. Install CLI & authenticate
+npm install -g @tigrisdata/cli
+tigris login
+
+# 2. Create bucket and access key
+tigris buckets create my-app-uploads
+tigris access-keys create "my-app-uploads-key"
+# ⚠ Save the Secret Access Key — shown only once
+tigris access-keys assign tid_xxx --bucket my-app-uploads --role Editor
+
+# 3. Install SDK
 npm install @tigrisdata/storage
-# or
-yarn add @tigrisdata/storage
 ```
-
-### 2. Create Account Resources
-
-1. Create Tigris account: https://storage.new
-2. Create bucket: https://console.tigris.dev/createbucket
-3. Create access key: https://console.tigris.dev/createaccesskey
-
-### 3. Configure the Environment
-
-Create `.env` in project root:
 
 ```bash
-TIGRIS_STORAGE_ACCESS_KEY_ID=tid_access_key_id
-TIGRIS_STORAGE_SECRET_ACCESS_KEY=tsec_secret_access_key
-TIGRIS_STORAGE_BUCKET=bucket_name
+# .env
+TIGRIS_STORAGE_ACCESS_KEY_ID=tid_xxx
+TIGRIS_STORAGE_SECRET_ACCESS_KEY=tsec_yyy
+TIGRIS_STORAGE_ENDPOINT=https://t3.storage.dev
+TIGRIS_STORAGE_BUCKET=my-app-uploads
 ```
-
-## Quick Reference
-
-| Variable                           | Purpose               | Required           |
-| ---------------------------------- | --------------------- | ------------------ |
-| `TIGRIS_STORAGE_ACCESS_KEY_ID`     | Authentication key ID | Yes                |
-| `TIGRIS_STORAGE_SECRET_ACCESS_KEY` | Authentication secret | Yes                |
-| `TIGRIS_STORAGE_BUCKET`            | Default bucket name   | Yes (can override) |
-
-## Per-Request Configuration
-
-All methods accept optional config to override environment variables:
 
 ```typescript
-import { list } from "@tigrisdata/storage";
+import { put } from "@tigrisdata/storage";
 
-// Use environment defaults
-const result = await list();
-
-// Override bucket
-const result = await list({
-  config: { bucket: "different-bucket" },
-});
-
-// Override all config
-const result = await list({
-  config: {
-    bucket: "my-bucket",
-    accessKeyId: "key",
-    secretAccessKey: "secret",
-  },
-});
+// Files are private by default — only authenticated requests can access them
+const result = await put("avatars/user-123.jpg", file);
+if (result.error) throw result.error;
+console.log(result.data?.url);
 ```
 
-## Common Mistakes
-
-| Mistake                | Fix                                             |
-| ---------------------- | ----------------------------------------------- |
-| Missing `.env` file    | Create it in project root                       |
-| Wrong bucket name      | Verify at console.tigris.dev                    |
-| Access key not working | Regenerate at console.tigris.dev/createaccesskey |
-
-## Next Steps
-
-After installation:
-
-- Use **tigris-object-operations** to get, put, delete, and list objects
-- Use **tigris-bucket-management** for bucket CRUD operations
-- Use **tigris-snapshots-forking** for version control and forking
+For full SDK reference, presigned URLs, client-side uploads, and troubleshooting — use the **`file-storage`** skill.

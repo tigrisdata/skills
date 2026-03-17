@@ -4,21 +4,33 @@ A collection of skills for AI coding agents. Skills are packaged instructions th
 
 ## Available Skills
 
-### installing-tigris-storage
+### file-storage
 
-Get started with Tigris Storage by installing the package, creating account resources, and configuring authentication.
+Get started with Tigris file storage. CLI setup (bucket, access keys, environment) and `@tigrisdata/storage` SDK for application code.
 
 **Use when:**
-- "Install Tigris"
-- "Setup object storage"
-- "Configure @tigrisdata/storage"
-- "Set up bucket access"
+
+- "File storage", "upload file", "store files"
+- "Tigris", "set up Tigris", "tigris bucket"
+- "Client upload", "presigned URL"
 
 **What's covered:**
-- Package installation (`npm install @tigrisdata/storage`)
-- Account setup at https://storage.new
-- Environment configuration with `.env`
-- Per-request configuration overrides
+
+- CLI setup: authenticate, create bucket, create and assign access keys
+- SDK reference: `put`, `get`, `remove`, `list`, `head`, `getPresignedUrl`
+- Client-side browser uploads via `handleClientUpload`
+- Common patterns: avatar upload, API route file serving
+- Critical rules and known issues prevention
+
+### installing-tigris-storage
+
+> **Superseded by `file-storage`.** This skill now redirects to `file-storage`, which covers everything this skill did and more.
+
+**Upgrade:**
+
+```bash
+npx skills add https://github.com/tigrisdata/skills --skill file-storage
+```
 
 ### tigris-bucket-management
 
@@ -56,22 +68,6 @@ Upload, download, delete, list, and inspect objects in Tigris Storage. Generate 
 - `list(options)` - list with prefix filtering and pagination
 - `head(path, options)` - get object metadata
 - `getPresignedUrl(path, options)` - generate temporary access URLs
-
-### file-storage
-
-Get started with Tigris file storage. CLI setup (bucket, access keys, environment) and `@tigrisdata/storage` SDK for application code.
-
-**Use when:**
-- "File storage", "upload file", "store files"
-- "Tigris", "set up Tigris", "tigris bucket"
-- "Client upload", "presigned URL"
-
-**What's covered:**
-- CLI setup: authenticate, create bucket, create and assign access keys
-- SDK reference: `put`, `get`, `remove`, `list`, `head`, `getPresignedUrl`
-- Client-side browser uploads via `handleClientUpload`
-- Common patterns: avatar upload, API route file serving
-- Critical rules and known issues prevention
 
 ### tigris-snapshots-forking
 
