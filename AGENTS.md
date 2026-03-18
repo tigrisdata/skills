@@ -14,9 +14,8 @@ A collection of skills for Claude.ai and Claude Code for working with Tigris obj
 | `tigris-bucket-management`  | Creating, listing, inspecting, and deleting Tigris buckets        | User mentions "bucket", "create bucket", "list buckets"                         |
 | `tigris-object-operations`  | Uploading, downloading, deleting, listing objects, presigned URLs | User mentions "upload", "download", "put object", "get object", "presigned URL" |
 | `tigris-snapshots-forking`  | Point-in-time recovery, bucket forking for testing                | User mentions "snapshot", "fork", "point-in-time recovery", "restore"           |
-| `file-storage`              | CLI setup and SDK reference for Tigris file storage               | User mentions "file storage", "upload file", "tigris", "client upload"         |
+| `file-storage`              | CLI setup, SDK reference, and framework integration for Tigris file storage | User mentions "file storage", "upload file", "tigris", "client upload", "Next.js upload", "Rails upload", "Django upload", "Laravel upload", "Express upload", "Remix upload" |
 | `go-table-driven-tests`     | Writing Go table-driven tests following established patterns      | User mentions "Go test", "table-driven test", "test coverage" in Go codebase    |
-| `tigris-file-uploads`        | File uploads/downloads across all frameworks with Tigris         | User mentions "file upload", "Next.js upload", "Rails upload", "Django upload", "Laravel upload", "Express upload", "Remix upload" |
 | `tigris-image-optimization`  | Resize, crop, thumbnail generation across all major frameworks   | User mentions "image optimization", "resize images", "thumbnails", "image CDN"  |
 | `tigris-static-assets`       | Deploy CSS/JS/fonts to Tigris for CDN delivery                   | User mentions "static assets", "deploy CSS", "asset CDN", "cache headers"       |
 | `tigris-backup-export`       | Database backups and data export to Tigris                       | User mentions "backup database", "database dump", "scheduled backup"            |
