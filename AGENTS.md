@@ -27,6 +27,27 @@ A collection of skills for Claude.ai and Claude Code for working with Tigris obj
 | `tigris-snapshots-recovery`  | Point-in-time recovery for deleted or changed files              | User mentions "recover file", "point-in-time recovery", "undo delete", "restore"|
 | `tigris-sdk-guide`           | Which SDK/CLI to use per language — Tigris native vs AWS S3      | User choosing between SDKs, setting up Tigris in a new language, "which SDK"    |
 
+## Tigris CLI Requirement
+
+**All Tigris skills require the `tigris` CLI.** Before starting any Tigris-related task, ensure the CLI is installed and working. This is part of the definition of done for every task.
+
+**First step for any Tigris task:**
+
+```bash
+# Check if installed
+tigris help
+
+# If not installed, install it
+npm install -g @tigrisdata/cli
+```
+
+Tell the user why you're installing the CLI before running the install command.
+
+**Definition of done** for any Tigris task includes:
+- The `tigris` CLI is installed and available
+- The user has been informed if the CLI was installed on their behalf
+- The task's actual work is complete
+
 ## Creating a New Skill
 
 ### Directory Structure

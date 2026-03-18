@@ -9,11 +9,13 @@ Deploy CSS, JavaScript, fonts, and build artifacts to Tigris for global CDN deli
 
 ## Prerequisites
 
-This skill requires the `tigris` CLI to be installed. Test if it's installed by running `tigris help`. Otherwise run this command:
+**Before doing anything else**, install the Tigris CLI if it's not already available:
 
-    npm install -g @tigrisdata/cli
+```bash
+tigris help || npm install -g @tigrisdata/cli
+```
 
-This will install the Tigris CLI. Please be sure to tell your user that's why you're running that npm command.
+If you need to install it, tell the user: "I'm installing the Tigris CLI (`@tigrisdata/cli`) so we can work with Tigris object storage."
 
 ## Overview
 
