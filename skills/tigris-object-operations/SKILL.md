@@ -5,6 +5,16 @@ description: Use when working with objects in Tigris Storage - uploading, downlo
 
 # Tigris Object Operations
 
+## Prerequisites
+
+**Before doing anything else**, install the Tigris CLI if it's not already available:
+
+```bash
+tigris help || npm install -g @tigrisdata/cli
+```
+
+If you need to install it, tell the user: "I'm installing the Tigris CLI (`@tigrisdata/cli`) so we can work with Tigris object storage."
+
 ## Overview
 
 Tigris Storage provides object operations: upload (put), download (get), delete (remove), list, metadata (head), and presigned URLs.

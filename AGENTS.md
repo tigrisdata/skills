@@ -16,6 +16,37 @@ A collection of skills for Claude.ai and Claude Code for working with Tigris obj
 | `tigris-snapshots-forking`  | Point-in-time recovery, bucket forking for testing                | User mentions "snapshot", "fork", "point-in-time recovery", "restore"           |
 | `file-storage`              | CLI setup and SDK reference for Tigris file storage               | User mentions "file storage", "upload file", "tigris", "client upload"         |
 | `go-table-driven-tests`     | Writing Go table-driven tests following established patterns      | User mentions "Go test", "table-driven test", "test coverage" in Go codebase    |
+| `tigris-file-uploads`        | File uploads/downloads across all frameworks with Tigris         | User mentions "file upload", "Next.js upload", "Rails upload", "Django upload", "Laravel upload", "Express upload", "Remix upload" |
+| `tigris-image-optimization`  | Resize, crop, thumbnail generation across all major frameworks   | User mentions "image optimization", "resize images", "thumbnails", "image CDN"  |
+| `tigris-static-assets`       | Deploy CSS/JS/fonts to Tigris for CDN delivery                   | User mentions "static assets", "deploy CSS", "asset CDN", "cache headers"       |
+| `tigris-backup-export`       | Database backups and data export to Tigris                       | User mentions "backup database", "database dump", "scheduled backup"            |
+| `tigris-s3-migration`        | Migrate from S3/GCS/Azure to Tigris with zero downtime           | User mentions "migrate from S3", "shadow bucket", "switch to Tigris"            |
+| `tigris-egress-optimizer`    | Diagnose and fix excessive storage bandwidth costs               | User mentions "egress costs", "high bill", "bandwidth", "reduce data transfer"  |
+| `tigris-security-access-control` | CORS, key rotation, bucket policies, security auditing       | User mentions "CORS", "access key", "key rotation", "security", "permissions"   |
+| `tigris-lifecycle-management`| Auto-expire objects, storage tier transitions, cleanup rules     | User mentions "lifecycle", "auto-delete", "TTL", "storage tiers", "expiration"  |
+| `tigris-snapshots-recovery`  | Point-in-time recovery for deleted or changed files              | User mentions "recover file", "point-in-time recovery", "undo delete", "restore"|
+| `tigris-sdk-guide`           | Which SDK/CLI to use per language — Tigris native vs AWS S3      | User choosing between SDKs, setting up Tigris in a new language, "which SDK"    |
+
+## Tigris CLI Requirement
+
+**All Tigris skills require the `tigris` CLI.** Before starting any Tigris-related task, ensure the CLI is installed and working. This is part of the definition of done for every task.
+
+**First step for any Tigris task:**
+
+```bash
+# Check if installed
+tigris help
+
+# If not installed, install it
+npm install -g @tigrisdata/cli
+```
+
+Tell the user why you're installing the CLI before running the install command.
+
+**Definition of done** for any Tigris task includes:
+- The `tigris` CLI is installed and available
+- The user has been informed if the CLI was installed on their behalf
+- The task's actual work is complete
 
 ## Creating a New Skill
 

@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "organization": "Tigris Data",
+  "date": "March 2026",
+  "abstract": "Deploy CSS, JavaScript, fonts, and build artifacts to Tigris for global CDN delivery. Covers asset pipeline integration and cache-busting strategies for Next.js (assetPrefix), Remix (Vite base), Rails (Sprockets/Propshaft asset sync), Django (collectstatic with S3StaticStorage), Laravel (Vite/Mix), and Express (static redirect pattern).",
+  "references": [
+    "https://www.tigrisdata.com/docs/",
+    "https://www.tigrisdata.com/docs/sdks/tigris/"
+  ]
+}

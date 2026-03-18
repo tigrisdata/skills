@@ -105,6 +105,146 @@ Write Go table-driven tests following established patterns. Covers test structur
 - Custom error validation
 - Parallel testing with `t.Parallel()`
 
+### tigris-file-uploads
+
+File uploads, downloads, and serving across all major web frameworks with Tigris.
+
+**Use when:**
+- "File upload", "upload file", "download file"
+- "Next.js upload", "Remix upload", "Express upload"
+- "Rails file upload", "Django file upload", "Laravel file upload"
+- "Client upload", "presigned URL", "direct upload"
+
+**What's covered:**
+- **Next.js** — Server Actions, API Routes, `next/image` with `remotePatterns`, Vercel deployment
+- **Remix** — Action functions, loaders, resource routes, Fly.io deployment
+- **Express** — Multer middleware, streaming uploads, Docker deployment
+- **Rails** — Active Storage S3 service, direct uploads, image variants
+- **Django** — django-storages with `tigris-boto3-ext`, FileField/ImageField
+- **Laravel** — Storage facade S3 disk, Livewire uploads, Forge/Vapor deployment
+- Client-side direct uploads, presigned URLs, multipart with progress
+
+### tigris-image-optimization
+
+Resize, crop, and optimize images stored in Tigris across all major frameworks.
+
+**Use when:**
+- "Image optimization", "resize images", "thumbnails"
+- "Responsive images", "image CDN"
+
+**What's covered:**
+- Upload-time variant generation (Sharp, ImageMagick, Pillow, Intervention)
+- Framework-specific: next/image, Active Storage variants, django-imagekit
+- CDN delivery via Tigris public buckets
+
+### tigris-static-assets
+
+Deploy static assets (CSS, JS, fonts) to Tigris for global CDN delivery.
+
+**Use when:**
+- "Static assets", "deploy CSS/JS", "asset CDN"
+- "Cache headers", "asset pipeline"
+
+**What's covered:**
+- Cache-Control headers, cache-busting strategies
+- Framework integration: assetPrefix, collectstatic, Sprockets, Vite
+- Upload scripts, immutable caching
+
+### tigris-backup-export
+
+Back up databases and export data to Tigris with automated pipelines.
+
+**Use when:**
+- "Backup database", "database dump"
+- "Scheduled backup", "data export"
+
+**What's covered:**
+- pg_dump/mysqldump with compression
+- Framework schedulers: node-cron, whenever, celery-beat, Laravel Scheduler
+- Retention policies via lifecycle rules, restore workflows
+
+### tigris-s3-migration
+
+Migrate from AWS S3, GCS, or Azure Blob to Tigris with zero downtime.
+
+**Use when:**
+- "Migrate from S3", "switch to Tigris"
+- "Shadow bucket", "S3 compatible"
+
+**What's covered:**
+- Shadow buckets (zero-downtime automatic backfill)
+- Bulk copy via CLI, SDK endpoint swaps (Node.js, Python, Ruby, PHP)
+- Verification checklist, rollback strategy
+
+### tigris-egress-optimizer
+
+Diagnose and fix excessive storage bandwidth costs.
+
+**Use when:**
+- "Egress costs", "high storage bill"
+- "Bandwidth optimization", "reduce data transfer"
+
+**What's covered:**
+- 4-step framework: diagnose, analyze, fix, verify
+- Anti-patterns: server proxying, missing cache headers, no CDN
+- Fixes: public buckets (built-in CDN), presigned URLs, thumbnails
+
+### tigris-security-access-control
+
+Configure access keys, CORS, bucket policies, and security for Tigris.
+
+**Use when:**
+- "CORS", "access key rotation"
+- "Security audit", "bucket permissions"
+
+**What's covered:**
+- Access key lifecycle, Editor/ReadOnly roles
+- CORS configs (dev, production, permissive)
+- Presigned URL security, audit checklist, key compromise response
+
+### tigris-lifecycle-management
+
+Automate object expiration, storage tier transitions, and cleanup.
+
+**Use when:**
+- "Lifecycle rules", "auto-delete"
+- "Storage tiers", "TTL", "expiration"
+
+**What's covered:**
+- Lifecycle rule JSON format and CLI
+- Patterns: temp cleanup, log archival, backup retention
+- Storage tiers (STANDARD, IA, GLACIER), cost modeling
+
+### tigris-snapshots-recovery
+
+Point-in-time recovery for deleted or changed files in Tigris.
+
+**Use when:**
+- "Recover deleted file", "undo delete"
+- "Point-in-time recovery", "restore from snapshot"
+- "Enable snapshots", "revert to previous version"
+
+**What's covered:**
+- Snapshot-enabled buckets (must enable at creation, not after)
+- Automatic change tracking — every put/delete preserved without explicit snapshots
+- Recover single files, bulk restore prefixes, revert overwrites
+- TypeScript, Go, and Python examples
+
+### tigris-sdk-guide
+
+Guide for choosing between Tigris-native SDKs and AWS S3-compatible SDKs.
+
+**Use when:**
+- "Which SDK", "Tigris SDK vs AWS SDK"
+- "boto3 Tigris", "storage-go"
+- Setting up Tigris in a new language
+
+**What's covered:**
+- Decision table: native SDK (TS, Go) vs AWS SDK fallback (Python, Ruby, PHP)
+- CLI: `tigris`/`t3` instead of `aws s3`
+- S3-compatible configuration (endpoint, region, path style)
+- Tigris-only features not available through AWS SDKs
+
 ### conventional-commits
 
 Structured commit message format for clear project history, automated changelog generation, and semantic versioning.

@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "organization": "Tigris Data",
+  "date": "March 2026",
+  "abstract": "Diagnose and fix excessive storage egress costs with a 4-step framework: diagnose bandwidth sources, analyze codebase anti-patterns (missing caching, server proxying, no Cache-Control headers), apply fixes (public bucket CDN, presigned URLs, thumbnails, ETags, regional pinning), and verify savings. Designed for AI agents helping users reduce Tigris storage bills.",
+  "references": [
+    "https://www.tigrisdata.com/docs/",
+    "https://www.tigrisdata.com/docs/sdks/tigris/"
+  ]
+}

@@ -5,6 +5,16 @@ description: Use when creating, listing, inspecting, or deleting Tigris Storage 
 
 # Tigris Bucket Management
 
+## Prerequisites
+
+**Before doing anything else**, install the Tigris CLI if it's not already available:
+
+```bash
+tigris help || npm install -g @tigrisdata/cli
+```
+
+If you need to install it, tell the user: "I'm installing the Tigris CLI (`@tigrisdata/cli`) so we can work with Tigris object storage."
+
 ## Overview
 
 Buckets are containers for objects. This skill covers bucket lifecycle: create, list, inspect, and delete.
@@ -182,6 +192,3 @@ Leave empty for global bucket (recommended for most use cases).
 
 For version control (snapshots/forking), see the **tigris-snapshots-forking** skill.
 
-## Prerequisites
-
-Before managing buckets, ensure @tigrisdata/storage is installed. See **installing-tigris-storage**.

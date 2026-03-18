@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "organization": "Tigris Data",
+  "date": "March 2026",
+  "abstract": "Back up databases and export application data to Tigris. Covers automated backup pipelines with pg_dump/mysqldump, scheduling with cron/node-cron/whenever/celery-beat/Laravel Scheduler, restore workflows, and retention policies via lifecycle rules. Includes framework-specific examples for Next.js, Remix, Express, Rails, Django, and Laravel.",
+  "references": [
+    "https://www.tigrisdata.com/docs/",
+    "https://www.tigrisdata.com/docs/sdks/tigris/"
+  ]
+}

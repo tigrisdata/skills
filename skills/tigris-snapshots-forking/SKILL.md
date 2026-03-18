@@ -5,6 +5,16 @@ description: Use when needing point-in-time recovery, version control for object
 
 # Tigris Snapshots and Forking
 
+## Prerequisites
+
+**Before doing anything else**, install the Tigris CLI if it's not already available:
+
+```bash
+tigris help || npm install -g @tigrisdata/cli
+```
+
+If you need to install it, tell the user: "I'm installing the Tigris CLI (`@tigrisdata/cli`) so we can work with Tigris object storage."
+
 ## Overview
 
 **Snapshots** capture your entire bucket at a point in time. **Forking** creates instant, isolated copies from snapshots using copy-on-write.
@@ -239,9 +249,3 @@ A snapshot is a single 64-bit integer representing nanoseconds since Unix epoch.
 
 Forking adds recursive indirection: child bucket objects override the parent, but missing objects recurse through the parent snapshot. This makes forking instant - no data copying, just metadata pointers.
 
-## Prerequisites
-
-Before using snapshots/forking:
-
-1. Install @tigrisdata/storage (see **installing-tigris-storage**)
-2. Create bucket with `enableSnapshot: true` (see **tigris-bucket-management**)
