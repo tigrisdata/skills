@@ -6,19 +6,22 @@ A collection of skills for AI coding agents. Skills are packaged instructions th
 
 ### file-storage
 
-Get started with Tigris file storage. CLI setup (bucket, access keys, environment) and `@tigrisdata/storage` SDK for application code.
+Get started with Tigris file storage. CLI setup (bucket, access keys, environment), `@tigrisdata/storage` SDK, and framework integration guides.
 
 **Use when:**
 
 - "File storage", "upload file", "store files"
 - "Tigris", "set up Tigris", "tigris bucket"
 - "Client upload", "presigned URL"
+- "Next.js upload", "Remix upload", "Express upload"
+- "Rails file upload", "Django file upload", "Laravel file upload"
 
 **What's covered:**
 
 - CLI setup: authenticate, create bucket, create and assign access keys
 - SDK reference: `put`, `get`, `remove`, `list`, `head`, `getPresignedUrl`
 - Client-side browser uploads via `handleClientUpload`
+- Framework guides: Next.js, Remix, Express, Rails, Django, Laravel
 - Common patterns: avatar upload, API route file serving
 - Critical rules and known issues prevention
 
@@ -104,25 +107,6 @@ Write Go table-driven tests following established patterns. Covers test structur
 - Test helpers with `t.Helper()`
 - Custom error validation
 - Parallel testing with `t.Parallel()`
-
-### tigris-file-uploads
-
-File uploads, downloads, and serving across all major web frameworks with Tigris.
-
-**Use when:**
-- "File upload", "upload file", "download file"
-- "Next.js upload", "Remix upload", "Express upload"
-- "Rails file upload", "Django file upload", "Laravel file upload"
-- "Client upload", "presigned URL", "direct upload"
-
-**What's covered:**
-- **Next.js** — Server Actions, API Routes, `next/image` with `remotePatterns`, Vercel deployment
-- **Remix** — Action functions, loaders, resource routes, Fly.io deployment
-- **Express** — Multer middleware, streaming uploads, Docker deployment
-- **Rails** — Active Storage S3 service, direct uploads, image variants
-- **Django** — django-storages with `tigris-boto3-ext`, FileField/ImageField
-- **Laravel** — Storage facade S3 disk, Livewire uploads, Forge/Vapor deployment
-- Client-side direct uploads, presigned URLs, multipart with progress
 
 ### tigris-image-optimization
 

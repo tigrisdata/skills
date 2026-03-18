@@ -1,6 +1,6 @@
 ---
 name: file-storage
-description: Use when working with Tigris file storage - uploading, downloading, deleting, listing files, presigned URLs, client uploads, or setting up Tigris CLI and SDK
+description: Use when working with Tigris file storage - uploading, downloading, deleting, listing files, presigned URLs, client uploads, or setting up Tigris CLI and SDK. Covers Next.js, Remix, Express, Rails, Django, and Laravel
 ---
 
 # Tigris File Storage
@@ -514,6 +514,32 @@ tigris touch <path>                 # Create empty object
 ```
 
 Remote paths use `t3://` prefix: `t3://my-bucket/path/file.txt`
+
+---
+
+## Framework Integration Guides
+
+For framework-specific upload/download patterns, read the resource file for your framework:
+
+| Framework | SDK | Resource |
+|-----------|-----|----------|
+| Next.js | `@tigrisdata/storage` (native) | Read `./resources/nextjs.md` — Server Actions, API Routes, next/image, client uploads |
+| Remix | `@tigrisdata/storage` (native) | Read `./resources/remix.md` — action functions, loaders, client uploads |
+| Express | `@tigrisdata/storage` (native) | Read `./resources/express.md` — Multer, streaming uploads, client uploads |
+| Rails | `aws-sdk-s3` (no native Ruby SDK yet) | Read `./resources/rails.md` — Active Storage, direct uploads, image variants |
+| Django | `tigris-boto3-ext` + `django-storages` | Read `./resources/django.md` — FileField, django-storages, presigned URLs |
+| Laravel | `league/flysystem-aws-s3-v3` (no native PHP SDK yet) | Read `./resources/laravel.md` — Storage facade, Livewire uploads, presigned URLs |
+
+### Deployment
+
+| Framework | Platform | Set env vars with |
+|-----------|----------|-------------------|
+| Next.js | Vercel | Dashboard → Settings → Environment Variables |
+| Remix | Fly.io | `fly secrets set TIGRIS_STORAGE_ACCESS_KEY_ID=... ...` |
+| Express | Docker | `-e` flags or `.env` in Compose |
+| Rails | Fly.io / Kamal | `fly secrets set` or `kamal env push` |
+| Django | Fly.io | `fly secrets set` |
+| Laravel | Forge / Vapor | Dashboard → Environment or `vapor env:pull` |
 
 ---
 
