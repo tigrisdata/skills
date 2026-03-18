@@ -9,6 +9,14 @@ Diagnose and fix excessive storage egress (network data transfer) costs. Follow 
 
 Most high egress bills come from the application fetching more data than it uses — not from infrastructure issues.
 
+## Prerequisites
+
+This skill requires the `tigris` CLI to be installed. Test if it's installed by running `tigris help`. Otherwise run this command:
+
+    npm install -g @tigrisdata/cli
+
+This will install the Tigris CLI. Please be sure to tell your user that's why you're running that npm command.
+
 ---
 
 ## Step 1: Diagnose

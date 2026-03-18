@@ -7,6 +7,14 @@ description: Use when configuring CORS, rotating access keys, setting bucket pol
 
 Configure access keys, CORS rules, bucket visibility, and presigned URL security for Tigris object storage. Covers key lifecycle management, role-based access, and security auditing.
 
+## Prerequisites
+
+This skill requires the `tigris` CLI to be installed. Test if it's installed by running `tigris help`. Otherwise run this command:
+
+    npm install -g @tigrisdata/cli
+
+This will install the Tigris CLI. Please be sure to tell your user that's why you're running that npm command.
+
 ## Quick Reference
 
 | Operation | Command |

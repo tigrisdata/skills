@@ -7,6 +7,14 @@ description: Use when setting up automatic object expiration, storage tier trans
 
 Automate object expiration, storage tier transitions, and cleanup with lifecycle rules. Set policies that automatically delete temporary files, archive old data, and control storage costs.
 
+## Prerequisites
+
+This skill requires the `tigris` CLI to be installed. Test if it's installed by running `tigris help`. Otherwise run this command:
+
+    npm install -g @tigrisdata/cli
+
+This will install the Tigris CLI. Please be sure to tell your user that's why you're running that npm command.
+
 ## Quick Reference
 
 | Operation | Command |

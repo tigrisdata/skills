@@ -7,6 +7,14 @@ description: Use when backing up databases to Tigris, scheduling exports, archiv
 
 Back up databases, export application data, and archive files to Tigris. Covers automated backup pipelines, retention policies, and restore workflows for all major frameworks.
 
+## Prerequisites
+
+This skill requires the `tigris` CLI to be installed. Test if it's installed by running `tigris help`. Otherwise run this command:
+
+    npm install -g @tigrisdata/cli
+
+This will install the Tigris CLI. Please be sure to tell your user that's why you're running that npm command.
+
 ## Overview
 
 | Component | Purpose |

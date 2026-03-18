@@ -7,6 +7,14 @@ description: Use when deploying static assets (CSS, JS, fonts, build artifacts) 
 
 Deploy CSS, JavaScript, fonts, and build artifacts to Tigris for global CDN delivery. Covers asset pipeline integration, cache-busting strategies, and `Cache-Control` configuration for all major frameworks.
 
+## Prerequisites
+
+This skill requires the `tigris` CLI to be installed. Test if it's installed by running `tigris help`. Otherwise run this command:
+
+    npm install -g @tigrisdata/cli
+
+This will install the Tigris CLI. Please be sure to tell your user that's why you're running that npm command.
+
 ## Overview
 
 Tigris public buckets automatically serve files from the nearest global edge — no separate CDN configuration needed. Combined with content-hashed filenames and immutable cache headers, this gives you fast, cost-effective static asset delivery.
@@ -56,8 +64,6 @@ await put("assets/main-abc123.js", fileBuffer, {
 
 ## Upload Script (General)
 
-A simple deploy script that syncs build output to Tigris:
-
 ```bash
 #!/bin/bash
 # scripts/deploy-assets.sh
@@ -73,199 +79,16 @@ echo "Assets deployed to t3://$BUCKET/"
 
 ---
 
-## Next.js
+## Framework Guides
 
-### Custom Asset Prefix
+Read the resource file for your framework:
 
-```javascript
-// next.config.js
-module.exports = {
-  assetPrefix:
-    process.env.NODE_ENV === "production"
-      ? "https://my-app-assets.t3.storage.dev"
-      : undefined,
-};
-```
-
-### Deploy Script
-
-```bash
-# After `next build`, upload _next/static to Tigris
-tigris cp .next/static/ t3://my-app-assets/_next/static/ -r \
-  --cache-control "public, max-age=31536000, immutable"
-```
-
----
-
-## Remix
-
-### Vite Asset Configuration
-
-```typescript
-// vite.config.ts
-export default defineConfig({
-  build: {
-    assetsDir: "assets",
-  },
-  // In production, set base to Tigris bucket URL
-  base:
-    process.env.NODE_ENV === "production"
-      ? "https://my-app-assets.t3.storage.dev/"
-      : "/",
-});
-```
-
-```bash
-# After build, upload to Tigris
-tigris cp build/client/assets/ t3://my-app-assets/assets/ -r \
-  --cache-control "public, max-age=31536000, immutable"
-```
-
----
-
-## Rails
-
-### Sprockets / Propshaft Asset Sync
-
-```ruby
-# config/environments/production.rb
-config.asset_host = "https://my-app-assets.t3.storage.dev"
-```
-
-> **Note:** No native Tigris Ruby SDK exists yet. Uses `aws-sdk-s3` pointed at Tigris.
-
-```ruby
-# lib/tasks/assets.rake
-namespace :assets do
-  desc "Upload compiled assets to Tigris"
-  task upload: :environment do
-    require "aws-sdk-s3"
-
-    s3 = Aws::S3::Client.new(
-      endpoint: "https://t3.storage.dev",
-      region: "auto",
-      access_key_id: ENV["AWS_ACCESS_KEY_ID"],
-      secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"],
-    )
-
-    Dir.glob("public/assets/**/*").each do |file|
-      next if File.directory?(file)
-      key = file.sub("public/", "")
-      s3.put_object(
-        bucket: ENV["TIGRIS_ASSETS_BUCKET"],
-        key: key,
-        body: File.open(file),
-        content_type: Marcel::MimeType.for(name: file),
-        cache_control: "public, max-age=31536000, immutable",
-        acl: "public-read",
-      )
-    end
-    puts "Assets uploaded to Tigris"
-  end
-end
-```
-
-```bash
-rails assets:precompile && rails assets:upload
-```
-
----
-
-## Django
-
-### collectstatic with S3 Backend
-
-> Uses `django-storages` with `tigris-boto3-ext` (install: `pip install django-storages tigris-boto3-ext`).
-
-```python
-# settings.py
-STORAGES = {
-    "default": {
-        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-    },
-    "staticfiles": {
-        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
-    },
-}
-
-AWS_S3_ENDPOINT_URL = "https://t3.storage.dev"
-AWS_STORAGE_BUCKET_NAME = "my-app-assets"
-AWS_S3_CUSTOM_DOMAIN = "my-app-assets.t3.storage.dev"
-AWS_DEFAULT_ACL = "public-read"
-STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
-
-AWS_S3_OBJECT_PARAMETERS = {
-    "CacheControl": "public, max-age=31536000, immutable",
-}
-```
-
-```bash
-python manage.py collectstatic --noinput
-```
-
-**Comparison with WhiteNoise:** WhiteNoise serves static files from the app server. Use Tigris instead when you want global CDN delivery without adding load to your application server.
-
----
-
-## Laravel
-
-### Vite / Mix Asset Upload
-
-```php
-// config/filesystems.php
-'disks' => [
-    'assets' => [
-        'driver' => 's3',
-        'key' => env('AWS_ACCESS_KEY_ID'),
-        'secret' => env('AWS_SECRET_ACCESS_KEY'),
-        'region' => 'auto',
-        'bucket' => env('TIGRIS_ASSETS_BUCKET'),
-        'endpoint' => 'https://t3.storage.dev',
-        'use_path_style_endpoint' => true,
-        'visibility' => 'public',
-    ],
-],
-```
-
-```bash
-# .env
-ASSET_URL=https://my-app-assets.t3.storage.dev
-```
-
-Deploy script:
-
-```bash
-npm run build
-tigris cp public/build/ t3://my-app-assets/build/ -r \
-  --cache-control "public, max-age=31536000, immutable"
-```
-
----
-
-## Express
-
-### Static Redirect Pattern
-
-Instead of serving static files from Express, redirect to Tigris:
-
-```typescript
-// For development: serve locally
-app.use("/assets", express.static("dist/assets"));
-
-// For production: redirect to Tigris
-app.use("/assets", (req, res) => {
-  res.redirect(301, `https://my-app-assets.t3.storage.dev/assets${req.path}`);
-});
-```
-
-Or upload after build:
-
-```bash
-# Build and deploy
-npm run build
-tigris cp dist/assets/ t3://my-app-assets/assets/ -r \
-  --cache-control "public, max-age=31536000, immutable"
-```
+- **Next.js** — Read `./resources/nextjs.md` for assetPrefix config and deploy script
+- **Remix** — Read `./resources/remix.md` for Vite config and deploy script
+- **Express** — Read `./resources/express.md` for static redirect pattern
+- **Rails** — Read `./resources/rails.md` for Sprockets/Propshaft asset sync
+- **Django** — Read `./resources/django.md` for collectstatic with S3 backend
+- **Laravel** — Read `./resources/laravel.md` for Vite/Mix asset upload
 
 ---
 

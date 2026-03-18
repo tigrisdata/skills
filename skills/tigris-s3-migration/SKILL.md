@@ -7,6 +7,14 @@ description: Use when migrating from AWS S3, Google Cloud Storage, or Azure Blob
 
 Migrate your object storage to Tigris with zero downtime. Tigris is S3-compatible, so most apps need only an endpoint and credential swap. Shadow buckets enable transparent migration without moving data upfront.
 
+## Prerequisites
+
+This skill requires the `tigris` CLI to be installed. Test if it's installed by running `tigris help`. Otherwise run this command:
+
+    npm install -g @tigrisdata/cli
+
+This will install the Tigris CLI. Please be sure to tell your user that's why you're running that npm command.
+
 ## Migration Strategies
 
 | Strategy | Downtime | Best For |
@@ -69,7 +77,6 @@ aws s3 sync s3://my-existing-bucket s3://my-app-uploads
 ### From Google Cloud Storage
 
 ```bash
-# Export from GCS, upload to Tigris
 gsutil -m cp -r gs://my-gcs-bucket /tmp/migration/
 tigris cp /tmp/migration/ t3://my-app-uploads/ -r
 ```
@@ -77,7 +84,6 @@ tigris cp /tmp/migration/ t3://my-app-uploads/ -r
 ### From Azure Blob Storage
 
 ```bash
-# Export from Azure, upload to Tigris
 az storage blob download-batch -d /tmp/migration/ -s my-container
 tigris cp /tmp/migration/ t3://my-app-uploads/ -r
 ```
@@ -86,105 +92,13 @@ tigris cp /tmp/migration/ t3://my-app-uploads/ -r
 
 ## SDK Code Changes
 
-### Node.js — Use Tigris SDK (Recommended)
+Read the resource file for your language to see before/after migration examples:
 
-Replace AWS S3 SDK calls with `@tigrisdata/storage` — simpler API, no bucket/region boilerplate:
-
-```bash
-npm install @tigrisdata/storage
-```
-
-```typescript
-// Before (AWS S3)
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-const s3 = new S3Client({ region: "us-east-1" });
-await s3.send(new PutObjectCommand({ Bucket: "my-bucket", Key: "file.jpg", Body: data }));
-
-// After (Tigris SDK) — just set env vars and go
-import { put } from "@tigrisdata/storage";
-await put("file.jpg", data, { contentType: "image/jpeg" });
-```
-
-### Go — Use Tigris SDK
-
-```bash
-go get github.com/tigrisdata/storage-go
-```
-
-```go
-// Before (AWS S3)
-cfg, _ := config.LoadDefaultConfig(ctx)
-client := s3.NewFromConfig(cfg)
-client.PutObject(ctx, &s3.PutObjectInput{Bucket: &bucket, Key: &key, Body: reader})
-
-// After (Tigris SDK)
-import "github.com/tigrisdata/storage-go/simplestorage"
-client, _ := simplestorage.New(ctx)
-client.PutObject(ctx, "my-bucket", "file.jpg", reader)
-```
-
-The Go SDK also provides Tigris-specific features (snapshots, forks, renaming) not available through the AWS SDK.
-
-### Python — Use `tigris-boto3-ext`
-
-```bash
-pip install tigris-boto3-ext
-```
-
-```python
-from botocore.client import Config
-
-# Before
-s3 = boto3.client("s3")
-
-# After — add endpoint, Tigris credentials, and virtual addressing
-s3 = boto3.client(
-    "s3",
-    endpoint_url="https://t3.storage.dev",
-    aws_access_key_id="tid_xxx",
-    aws_secret_access_key="tsec_yyy",
-    region_name="auto",
-    config=Config(s3={"addressing_style": "virtual"}),
-)
-```
-
-### Ruby — aws-sdk-s3 with Tigris endpoint
-
-> **Note:** No native Tigris Ruby SDK exists yet. Use aws-sdk-s3 pointed at Tigris.
-
-```ruby
-# Before
-s3 = Aws::S3::Client.new(region: "us-east-1")
-
-# After — add endpoint and Tigris credentials
-s3 = Aws::S3::Client.new(
-  endpoint: "https://t3.storage.dev",
-  region: "auto",
-  access_key_id: ENV["AWS_ACCESS_KEY_ID"],
-  secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"],
-)
-```
-
-### PHP — aws-sdk-php with Tigris endpoint
-
-> **Note:** No native Tigris PHP SDK exists yet. Use aws-sdk-php pointed at Tigris.
-
-```php
-// Before
-$s3 = new S3Client(['region' => 'us-east-1', 'version' => 'latest']);
-
-// After — add endpoint and Tigris credentials
-$s3 = new S3Client([
-    'endpoint' => 'https://t3.storage.dev',
-    'region' => 'auto',
-    'version' => 'latest',
-    'use_path_style_endpoint' => true,
-    'credentials' => [
-        'key' => env('AWS_ACCESS_KEY_ID'),
-        'secret' => env('AWS_SECRET_ACCESS_KEY'),
-    ],
-]);
-```
+- **Node.js / TypeScript** — Read `./resources/sdk-nodejs.md` for AWS SDK → Tigris SDK migration
+- **Go** — Read `./resources/sdk-go.md` for AWS SDK → Tigris SDK migration
+- **Python** — Read `./resources/sdk-python.md` for boto3 → tigris-boto3-ext migration
+- **Ruby** — Read `./resources/sdk-ruby.md` for aws-sdk-s3 endpoint swap
+- **PHP** — Read `./resources/sdk-php.md` for aws-sdk-php endpoint swap
 
 ---
 

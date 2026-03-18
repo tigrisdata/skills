@@ -7,6 +7,14 @@ description: Use when choosing between Tigris-native SDKs and AWS S3-compatible 
 
 Always prefer Tigris-native SDKs and the Tigris CLI over AWS S3 SDKs. This guide explains what's available per language, when you must fall back to AWS SDKs, and how to configure them.
 
+## Prerequisites
+
+This skill requires the `tigris` CLI to be installed. Test if it's installed by running `tigris help`. Otherwise run this command:
+
+    npm install -g @tigrisdata/cli
+
+This will install the Tigris CLI. Please be sure to tell your user that's why you're running that npm command.
+
 ## Decision Table
 
 | Language | Tigris SDK/Extension | Package | Use AWS SDK? |
@@ -27,9 +35,6 @@ Always prefer Tigris-native SDKs and the Tigris CLI over AWS S3 SDKs. This guide
 Use the Tigris CLI instead of `aws s3` for all object storage operations.
 
 ```bash
-# Install
-npm install -g @tigrisdata/cli
-
 # ✅ Do this
 tigris cp local-file.txt t3://my-bucket/file.txt
 tigris ls t3://my-bucket/
@@ -60,220 +65,15 @@ tigris whoami
 
 ---
 
-## TypeScript / JavaScript — Use `@tigrisdata/storage`
+## Language-Specific SDK Guides
 
-```bash
-npm install @tigrisdata/storage
-```
+Read the resource file for your language:
 
-```typescript
-// ✅ Do this — Tigris SDK
-import { put, get, remove, list, head, getPresignedUrl } from "@tigrisdata/storage";
-
-await put("file.jpg", data, { contentType: "image/jpeg" });
-const result = await get("file.jpg", "string");
-await remove("file.jpg");
-
-// ❌ Not this — AWS SDK
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-const s3 = new S3Client({ endpoint: "https://t3.storage.dev", region: "auto" });
-await s3.send(new PutObjectCommand({ Bucket: "my-bucket", Key: "file.jpg", Body: data }));
-```
-
-**Why Tigris SDK is better:**
-- No bucket/region boilerplate — reads from env vars automatically
-- Simpler API: `put(path, body)` vs `new PutObjectCommand({Bucket, Key, Body})`
-- Built-in client upload support: `handleClientUpload` + `upload()` from `@tigrisdata/storage/client`
-- Built-in multipart with progress tracking
-- Returns typed `TigrisStorageResponse` with error handling
-
-### Client-Side Uploads
-
-```typescript
-// Server: handle presigned URL generation
-import { handleClientUpload } from "@tigrisdata/storage";
-const { data, error } = await handleClientUpload(requestBody);
-
-// Client: upload directly to Tigris
-import { upload } from "@tigrisdata/storage/client";
-await upload(filename, file, {
-  url: "/api/upload",
-  multipart: true,
-  onUploadProgress: ({ percentage }) => console.log(percentage),
-});
-```
-
-### Environment Variables
-
-```bash
-TIGRIS_STORAGE_ACCESS_KEY_ID=tid_xxx
-TIGRIS_STORAGE_SECRET_ACCESS_KEY=tsec_yyy
-TIGRIS_STORAGE_ENDPOINT=https://t3.storage.dev
-TIGRIS_STORAGE_BUCKET=my-app-uploads
-```
-
----
-
-## Go — Use `github.com/tigrisdata/storage-go`
-
-```bash
-go get github.com/tigrisdata/storage-go
-```
-
-Two packages available:
-
-### simplestorage (High-Level)
-
-```go
-// ✅ Do this — Tigris SDK
-import "github.com/tigrisdata/storage-go/simplestorage"
-
-client, err := simplestorage.New(ctx)
-err = client.PutObject(ctx, "my-bucket", "file.jpg", reader)
-obj, err := client.GetObject(ctx, "my-bucket", "file.jpg")
-```
-
-### storage (Full S3 + Tigris Extras)
-
-```go
-// ✅ Full client with Tigris-specific features
-import "github.com/tigrisdata/storage-go/storage"
-
-client, err := storage.New(ctx)
-
-// Standard S3 operations work
-client.PutObject(ctx, &s3.PutObjectInput{...})
-
-// Plus Tigris-specific features:
-client.CreateBucketSnapshot(ctx, "my-bucket")
-client.CreateBucketFork(ctx, "my-bucket", "my-fork")
-client.RenameObject(ctx, "my-bucket", "old-key", "new-key")  // in-place, no copy!
-```
-
-**Tigris-only Go features not in AWS SDK:**
-- `CreateBucketSnapshot` / `ListBucketSnapshots`
-- `CreateBucketFork` / `ListBucketForks`
-- `RenameObject` (in-place rename, no copy+delete needed)
-
-### Environment Variables
-
-```bash
-AWS_ACCESS_KEY_ID=tid_xxx
-AWS_SECRET_ACCESS_KEY=tsec_yyy
-AWS_ENDPOINT_URL_S3=https://t3.storage.dev
-AWS_REGION=auto
-```
-
----
-
-## Python — Use `tigris-boto3-ext`
-
-The Tigris boto3 extension extends `boto3` with Tigris-specific features (snapshots, forks, renaming). Always install it alongside `boto3`.
-
-```bash
-pip install tigris-boto3-ext
-```
-
-### Basic Operations
-
-```python
-import boto3
-from botocore.client import Config
-
-s3 = boto3.client(
-    "s3",
-    endpoint_url="https://t3.storage.dev",
-    aws_access_key_id="tid_xxx",
-    aws_secret_access_key="tsec_yyy",
-    region_name="auto",
-    config=Config(s3={"addressing_style": "virtual"}),
-)
-
-# Upload
-s3.put_object(Bucket="my-bucket", Key="file.jpg", Body=data)
-
-# Download
-response = s3.get_object(Bucket="my-bucket", Key="file.jpg")
-content = response["Body"].read()
-
-# Presigned URL
-url = s3.generate_presigned_url(
-    "get_object",
-    Params={"Bucket": "my-bucket", "Key": "file.jpg"},
-    ExpiresIn=3600,
-)
-```
-
-### Tigris-Only Features (via extension)
-
-```python
-from tigris_boto3_ext import TigrisSnapshot, TigrisFork
-
-# Snapshots — point-in-time recovery
-with TigrisSnapshot(s3, "my-bucket") as snapshot:
-    # Work with snapshot version
-    obj = snapshot.get_object(Key="file.jpg")
-
-# Forks — isolated copy-on-write clones
-with TigrisFork(s3, "my-bucket", "my-fork") as fork:
-    # Write to fork without affecting original
-    fork.put_object(Key="test.txt", Body=b"experimental data")
-```
-
-**Framework integration:**
-- Django: `django-storages` with `S3Boto3Storage` backend + `tigris-boto3-ext`
-- Flask/FastAPI: `tigris-boto3-ext` directly
-
----
-
-## Ruby — aws-sdk-s3 (No Native SDK Yet)
-
-There is no native Tigris Ruby SDK. Use `aws-sdk-s3` pointed at Tigris.
-
-```ruby
-# Gemfile
-gem "aws-sdk-s3"
-```
-
-```ruby
-require "aws-sdk-s3"
-
-s3 = Aws::S3::Client.new(
-  endpoint: "https://t3.storage.dev",
-  region: "auto",
-  access_key_id: ENV["AWS_ACCESS_KEY_ID"],
-  secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"],
-  force_path_style: true,
-)
-
-# Upload
-s3.put_object(bucket: "my-bucket", key: "file.jpg", body: File.open("file.jpg"))
-```
-
-**Framework integration:**
-- Rails: Active Storage with S3 service — set `endpoint` and `force_path_style: true` in `storage.yml`
-
----
-
-## PHP — aws-sdk-php (No Native SDK Yet)
-
-There is no native Tigris PHP SDK. Use `aws-sdk-php` or `league/flysystem-aws-s3-v3` pointed at Tigris.
-
-```php
-$s3 = new Aws\S3\S3Client([
-    'endpoint' => 'https://t3.storage.dev',
-    'region' => 'auto',
-    'version' => 'latest',
-    'use_path_style_endpoint' => true,
-    'credentials' => [
-        'key' => env('AWS_ACCESS_KEY_ID'),
-        'secret' => env('AWS_SECRET_ACCESS_KEY'),
-    ],
-]);
-```
-
-**Framework integration:**
-- Laravel: S3 disk driver in `filesystems.php` — set `endpoint` and `use_path_style_endpoint: true`
+- **TypeScript / JavaScript** — Read `./resources/typescript.md` for `@tigrisdata/storage` usage
+- **Go** — Read `./resources/go.md` for `storage-go` usage (simplestorage + full client)
+- **Python** — Read `./resources/python.md` for `tigris-boto3-ext` usage
+- **Ruby** — Read `./resources/ruby.md` for `aws-sdk-s3` with Tigris endpoint
+- **PHP** — Read `./resources/php.md` for `aws-sdk-php` with Tigris endpoint
 
 ---
 
