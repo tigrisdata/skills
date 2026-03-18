@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "organization": "Tigris Data",
+  "date": "March 2026",
+  "abstract": "Guide for choosing between Tigris-native SDKs and AWS S3-compatible SDKs. Covers the Tigris TypeScript SDK (@tigrisdata/storage), Go SDK (storage-go), Python boto3 extension (tigris-boto3-ext), and CLI (tigris/t3) as preferred options. Documents when AWS SDKs (aws-sdk-s3, aws-sdk-php) are required (Ruby, PHP) and how to configure them with the Tigris endpoint.",
+  "references": [
+    "https://www.tigrisdata.com/docs/sdks/tigris/",
+    "https://pkg.go.dev/github.com/tigrisdata/storage-go",
+    "https://www.tigrisdata.com/docs/sdks/s3/",
+    "https://www.tigrisdata.com/docs/cli/"
+  ]
+}

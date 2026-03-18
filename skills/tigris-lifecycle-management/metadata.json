@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "organization": "Tigris Data",
+  "date": "March 2026",
+  "abstract": "Automate object expiration, storage tier transitions, and cleanup with Tigris lifecycle rules. Covers rule format and CLI commands, common patterns (temp cleanup, log archival, backup retention, session TTL), storage tiers (STANDARD, STANDARD_IA, GLACIER), cost modeling, application-level TTL for metadata-based expiration, and interaction with snapshots.",
+  "references": [
+    "https://www.tigrisdata.com/docs/",
+    "https://www.tigrisdata.com/docs/sdks/tigris/"
+  ]
+}

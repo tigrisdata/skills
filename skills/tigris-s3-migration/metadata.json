@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "organization": "Tigris Data",
+  "date": "March 2026",
+  "abstract": "Migrate from AWS S3, Google Cloud Storage, or Azure Blob Storage to Tigris with zero downtime. Covers shadow buckets (transparent migration with automatic backfill), bulk copy via CLI, SDK endpoint swaps for Node.js, Python, Ruby, and PHP, environment variable changes, verification checklist, and rollback strategy.",
+  "references": [
+    "https://www.tigrisdata.com/docs/sdks/s3/",
+    "https://www.tigrisdata.com/docs/",
+    "https://www.tigrisdata.com/docs/sdks/s3/aws-js-sdk/"
+  ]
+}
