@@ -218,4 +218,4 @@ const result = await upload(file.name, file, {
 });
 ```
 
-For initial setup, see **installing-tigris-storage**.
+For initial setup, see **file-storage**.
