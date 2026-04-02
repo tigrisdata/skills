@@ -25,16 +25,6 @@ Get started with Tigris file storage. CLI setup (bucket, access keys, environmen
 - Common patterns: avatar upload, API route file serving
 - Critical rules and known issues prevention
 
-### installing-tigris-storage
-
-> **Superseded by `file-storage`.** This skill now redirects to `file-storage`, which covers everything this skill did and more.
-
-**Upgrade:**
-
-```bash
-npx skills add https://github.com/tigrisdata/skills --skill file-storage
-```
-
 ### tigris-bucket-management
 
 Create, list, inspect, and delete Tigris Storage buckets with support for regions, access levels, and storage tiers.
