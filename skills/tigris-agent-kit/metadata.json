@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "organization": "Tigris Data",
+  "date": "May 2026",
+  "abstract": "Comprehensive guide for the @tigrisdata/agent-kit package, designed for AI agents and LLMs building storage workflows for other agents. Covers four building blocks composed from @tigrisdata/storage and @tigrisdata/iam primitives: forks for instant copy-on-write isolated copies of shared datasets (createForks/teardownForks), workspaces for dedicated per-agent buckets with TTL and scoped credentials (createWorkspace/teardownWorkspace), checkpoints for point-in-time bucket snapshots that restore as independent forks (checkpoint/restore/listCheckpoints), and coordination for event-driven multi-agent pipelines via bucket webhooks (setupCoordination/teardownCoordination). Uses progressive disclosure with detailed reference files in resources/ covering fork lifecycle and hyperparameter sweeps, workspace TTL behavior and per-user sandboxes, checkpoint branching trajectories and rollback patterns, and coordination filter syntax and pipeline patterns.",
+  "references": [
+    "https://github.com/tigrisdata/storage/tree/main/packages/agent-kit",
+    "https://www.npmjs.com/package/@tigrisdata/agent-kit",
+    "https://www.tigrisdata.com/docs/storage/snapshots",
+    "https://www.tigrisdata.com/docs/storage/forking",
+    "https://www.tigrisdata.com/docs/buckets/object-notifications/"
+  ]
+}
