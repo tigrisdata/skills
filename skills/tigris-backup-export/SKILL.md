@@ -173,7 +173,7 @@ end
 
 ### Management Command
 
-> Uses `tigris-boto3-ext` (install: `pip install tigris-boto3-ext`).
+> Uses `tigris-boto3-ext` (install: `pip install tigris-boto3-ext`). For full Python/Django coverage, see the **tigris-python-sdk** skill.
 
 ```python
 # myapp/management/commands/dbbackup.py

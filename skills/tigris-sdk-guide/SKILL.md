@@ -73,7 +73,7 @@ Read the resource file for your language:
 
 - **TypeScript / JavaScript** — Read `./resources/typescript.md` for `@tigrisdata/storage` usage
 - **Go** — Read `./resources/go.md` for `storage-go` usage (simplestorage + full client)
-- **Python** — Read `./resources/python.md` for `tigris-boto3-ext` usage
+- **Python** — Read `./resources/python.md` for `tigris-boto3-ext` usage, or use the dedicated **tigris-python-sdk** skill (covers boto3 setup, Django via django-storages, snapshots, forks, in-place rename, and the Bundle API)
 - **Ruby** — Read `./resources/ruby.md` for `aws-sdk-s3` with Tigris endpoint
 - **PHP** — Read `./resources/php.md` for `aws-sdk-php` with Tigris endpoint
 
@@ -121,6 +121,7 @@ AWS_SECRET_ACCESS_KEY=tsec_yyy
 ## Related Skills
 
 - **file-storage** — Full `@tigrisdata/storage` SDK reference
+- **tigris-python-sdk** — Python via boto3 + `tigris-boto3-ext`, Django uploads, snapshots, forks, Bundle API
 - **tigris-s3-migration** — Migrating from AWS S3 SDKs to Tigris
 
 ## Official Documentation

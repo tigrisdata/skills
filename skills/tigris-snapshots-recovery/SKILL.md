@@ -96,7 +96,7 @@ For complete workflows including full bucket restore, prefix restore, timestamp-
 
 For Go SDK examples — read `./resources/go-examples.md`.
 
-For Python (tigris-boto3-ext) examples — read `./resources/python-examples.md`.
+For Python (tigris-boto3-ext) examples — read `./resources/python-examples.md`. For full Python coverage (boto3 setup, Django, Bundle API), use the **tigris-python-sdk** skill.
 
 ---
 

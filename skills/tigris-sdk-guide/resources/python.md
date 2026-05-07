@@ -1,5 +1,7 @@
 # Python — Use `tigris-boto3-ext`
 
+> For deeper coverage (Django via django-storages, the Bundle API for ML batch fetches, full snapshot/fork/rename usage patterns), use the dedicated **tigris-python-sdk** skill.
+
 The Tigris boto3 extension extends `boto3` with Tigris-specific features (snapshots, forks, renaming). Always install it alongside `boto3`.
 
 ```bash

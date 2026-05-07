@@ -13,7 +13,7 @@ A collection of skills for Claude.ai and Claude Code for working with Tigris obj
 | `tigris-bucket-management`  | Creating, listing, inspecting, and deleting Tigris buckets        | User mentions "bucket", "create bucket", "list buckets"                         |
 | `tigris-object-operations`  | Uploading, downloading, deleting, listing objects, presigned URLs | User mentions "upload", "download", "put object", "get object", "presigned URL" |
 | `tigris-snapshots-forking`  | Point-in-time recovery, bucket forking for testing                | User mentions "snapshot", "fork", "point-in-time recovery", "restore"           |
-| `file-storage`              | CLI setup, SDK reference, and framework integration for Tigris file storage | User mentions "file storage", "upload file", "tigris", "install Tigris", "setup object storage", "@tigrisdata/storage", "client upload", "Next.js upload", "Rails upload", "Django upload", "Laravel upload", "Express upload", "Remix upload" |
+| `file-storage`              | CLI setup, SDK reference, and framework integration for Tigris file storage | User mentions "file storage", "upload file", "tigris", "install Tigris", "setup object storage", "@tigrisdata/storage", "client upload", "Next.js upload", "Rails upload", "Laravel upload", "Express upload", "Remix upload" |
 | `go-table-driven-tests`     | Writing Go table-driven tests following established patterns      | User mentions "Go test", "table-driven test", "test coverage" in Go codebase    |
 | `tigris-image-optimization`  | Resize, crop, thumbnail generation across all major frameworks   | User mentions "image optimization", "resize images", "thumbnails", "image CDN"  |
 | `tigris-static-assets`       | Deploy CSS/JS/fonts to Tigris for CDN delivery                   | User mentions "static assets", "deploy CSS", "asset CDN", "cache headers"       |
@@ -25,6 +25,7 @@ A collection of skills for Claude.ai and Claude Code for working with Tigris obj
 | `tigris-snapshots-recovery`  | Point-in-time recovery for deleted or changed files              | User mentions "recover file", "point-in-time recovery", "undo delete", "restore"|
 | `tigris-sdk-guide`           | Which SDK/CLI to use per language — Tigris native vs AWS S3      | User choosing between SDKs, setting up Tigris in a new language, "which SDK"    |
 | `tigris-agent-kit`           | Storage workflows for AI agents — forks, workspaces, checkpoints, coordination | User mentions "agent-kit", "agent storage", "agent workspace", "fork dataset", "checkpoint and restore", "bucket webhook", "multi-agent pipeline" |
+| `tigris-python-sdk`          | Python access to Tigris — boto3 setup, Django via django-storages, snapshots, forks, in-place rename, conditional writes, Bundle API | User mentions "Python", "boto3", "Django upload", "tigris-boto3-ext", "django-storages", "bundle API", "conditional writes", "IfMatch", "snapshot from Python", "fork from Python" |
 
 ## Tigris CLI Requirement
 

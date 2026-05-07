@@ -98,7 +98,7 @@ Read the resource file for your language to see before/after migration examples:
 
 - **Node.js / TypeScript** — Read `./resources/sdk-nodejs.md` for AWS SDK → Tigris SDK migration
 - **Go** — Read `./resources/sdk-go.md` for AWS SDK → Tigris SDK migration
-- **Python** — Read `./resources/sdk-python.md` for boto3 → tigris-boto3-ext migration
+- **Python** — Read `./resources/sdk-python.md` for boto3 → tigris-boto3-ext migration, or use the **tigris-python-sdk** skill for the post-migration developer experience (Django, snapshots, forks, Bundle API)
 - **Ruby** — Read `./resources/sdk-ruby.md` for aws-sdk-s3 endpoint swap
 - **PHP** — Read `./resources/sdk-php.md` for aws-sdk-php endpoint swap
 

@@ -1,6 +1,6 @@
 ---
 name: file-storage
-description: Use when working with Tigris file storage - uploading, downloading, deleting, listing files, presigned URLs, client uploads, or setting up Tigris CLI and SDK. Covers Next.js, Remix, Express, Rails, Django, and Laravel
+description: Use when working with Tigris file storage - uploading, downloading, deleting, listing files, presigned URLs, client uploads, or setting up Tigris CLI and SDK. Covers Next.js, Remix, Express, Rails, and Laravel. For Python/Django, see the tigris-python-sdk skill.
 ---
 
 # Tigris File Storage
@@ -527,7 +527,7 @@ For framework-specific upload/download patterns, read the resource file for your
 | Remix | `@tigrisdata/storage` (native) | Read `./resources/remix.md` — action functions, loaders, client uploads |
 | Express | `@tigrisdata/storage` (native) | Read `./resources/express.md` — Multer, streaming uploads, client uploads |
 | Rails | `aws-sdk-s3` (no native Ruby SDK yet) | Read `./resources/rails.md` — Active Storage, direct uploads, image variants |
-| Django | `tigris-boto3-ext` + `django-storages` | Read `./resources/django.md` — FileField, django-storages, presigned URLs |
+| Django | `tigris-boto3-ext` + `django-storages` | Use the **tigris-python-sdk** skill — covers FileField, django-storages, presigned URLs |
 | Laravel | `league/flysystem-aws-s3-v3` (no native PHP SDK yet) | Read `./resources/laravel.md` — Storage facade, Livewire uploads, presigned URLs |
 
 ### Deployment
@@ -538,13 +538,13 @@ For framework-specific upload/download patterns, read the resource file for your
 | Remix | Fly.io | `fly secrets set TIGRIS_STORAGE_ACCESS_KEY_ID=... ...` |
 | Express | Docker | `-e` flags or `.env` in Compose |
 | Rails | Fly.io / Kamal | `fly secrets set` or `kamal env push` |
-| Django | Fly.io | `fly secrets set` |
 | Laravel | Forge / Vapor | Dashboard → Environment or `vapor env:pull` |
 
 ---
 
 ## Related Skills
 
+- **tigris-python-sdk** — Python access via boto3, Django uploads, snapshots, forks, Bundle API
 - **tigris-bucket-management** — Advanced bucket options (regions, tiers, snapshots)
 - **tigris-object-operations** — Detailed SDK function reference
 - **tigris-snapshots-forking** — Point-in-time recovery and bucket forking
