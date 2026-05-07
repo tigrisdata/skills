@@ -25,7 +25,7 @@ A collection of skills for Claude.ai and Claude Code for working with Tigris obj
 | `tigris-snapshots-recovery`  | Point-in-time recovery for deleted or changed files              | User mentions "recover file", "point-in-time recovery", "undo delete", "restore"|
 | `tigris-sdk-guide`           | Which SDK/CLI to use per language — Tigris native vs AWS S3      | User choosing between SDKs, setting up Tigris in a new language, "which SDK"    |
 | `tigris-agent-kit`           | Storage workflows for AI agents — forks, workspaces, checkpoints, coordination | User mentions "agent-kit", "agent storage", "agent workspace", "fork dataset", "checkpoint and restore", "bucket webhook", "multi-agent pipeline" |
-| `tigris-python-sdk`          | Python access to Tigris — boto3 setup, Django via django-storages, snapshots, forks, in-place rename, Bundle API | User mentions "Python", "boto3", "Django upload", "tigris-boto3-ext", "django-storages", "bundle API", "snapshot from Python", "fork from Python" |
+| `tigris-python-sdk`          | Python access to Tigris — boto3 setup, Django via django-storages, snapshots, forks, in-place rename, conditional writes, Bundle API | User mentions "Python", "boto3", "Django upload", "tigris-boto3-ext", "django-storages", "bundle API", "conditional writes", "IfMatch", "snapshot from Python", "fork from Python" |
 
 ## Tigris CLI Requirement
 

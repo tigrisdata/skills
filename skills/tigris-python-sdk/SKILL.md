@@ -1,6 +1,6 @@
 ---
 name: tigris-python-sdk
-description: Use when working with Tigris from Python — boto3 setup, Django uploads via django-storages, snapshots, bucket forking, in-place object rename, and the Bundle API for batch ML data fetches. Covers the tigris-boto3-ext extension library (context managers, decorators, helpers) plus framework integration.
+description: Use when working with Tigris from Python — boto3 setup, Django uploads via django-storages, snapshots, bucket forking, in-place object rename, conditional writes (IfMatch/IfNoneMatch), and the Bundle API for batch ML data fetches. Covers the tigris-boto3-ext extension library (context managers, decorators, helpers) plus framework integration.
 ---
 
 # Tigris Python SDK
@@ -316,6 +316,59 @@ with TigrisRename(s3):
 ```
 
 Keep `TigrisRename` / `with_rename` scope tight. Any `copy_object` inside the block becomes a rename — unrelated copies will not behave as expected.
+
+## Conditional Writes
+
+Tigris supports the standard S3 precondition headers — `If-Match`, `If-None-Match`, `If-Modified-Since`, `If-Unmodified-Since` — for optimistic concurrency and create-if-not-exists semantics. These are pure boto3 parameters; `tigris-boto3-ext` adds nothing on top because boto3 already passes them through.
+
+```python
+from botocore.exceptions import ClientError
+
+# Create-only (fail if the key already exists)
+try:
+    s3.put_object(
+        Bucket="my-bucket",
+        Key="config.json",
+        Body=b'{"version": 1}',
+        IfNoneMatch="*",
+    )
+except ClientError as e:
+    if e.response["Error"]["Code"] == "PreconditionFailed":
+        print("Object already exists")
+    else:
+        raise
+
+# Optimistic concurrency — read, modify, write only if unchanged
+head = s3.head_object(Bucket="my-bucket", Key="config.json")
+etag = head["ETag"]
+
+new_body = b'{"version": 2}'
+try:
+    s3.put_object(
+        Bucket="my-bucket",
+        Key="config.json",
+        Body=new_body,
+        IfMatch=etag,
+    )
+except ClientError as e:
+    if e.response["Error"]["Code"] == "PreconditionFailed":
+        # Someone else wrote the object since we read it — retry the read-modify-write
+        ...
+    else:
+        raise
+```
+
+| boto3 parameter      | Behavior                                                            | Common use                              |
+| -------------------- | ------------------------------------------------------------------- | --------------------------------------- |
+| `IfMatch=<etag>`     | Write only if current ETag matches                                  | Optimistic concurrency / lost-update    |
+| `IfNoneMatch="*"`    | Write only if the object does not exist                             | Create-once / idempotent writes         |
+| `IfNoneMatch=<etag>` | Write only if current ETag differs                                  | Skip identical re-uploads               |
+| `IfModifiedSince`    | Proceed only if modified after the given RFC 1123 timestamp         | Conditional reads / cache validation    |
+| `IfUnmodifiedSince`  | Proceed only if not modified after the given RFC 1123 timestamp     | Time-bounded optimistic concurrency     |
+
+Failed preconditions surface as a `ClientError` with `Error.Code == "PreconditionFailed"` (HTTP 412). Catch that specific code — don't swallow all `ClientError`s, since the same exception type covers `NoSuchKey`, throttling, etc.
+
+`IfMatch` / `IfNoneMatch` work on `put_object`, `copy_object`, `get_object`, `head_object`, and `delete_object`.
 
 ## Bundle API
 
