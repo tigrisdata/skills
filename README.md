@@ -137,6 +137,20 @@ Back up databases and export data to Tigris with automated pipelines.
 - Framework schedulers: node-cron, whenever, celery-beat, Laravel Scheduler
 - Retention policies via lifecycle rules, restore workflows
 
+### openclaw-backup
+
+Back up and restore the OpenClaw state directory (config, workspace, sessions, skills) to a Tigris bucket.
+
+**Use when:**
+- "Back up OpenClaw", "restore my assistant", "move OpenClaw to a new machine"
+- "Roll back to before an update", "clone my assistant"
+
+**What's covered:**
+- Consistent backups (SQLite via the backup API, WAL/journal excluded)
+- Dry-run-by-default restore with a pre-restore safety copy
+- Point-in-time rollback via bucket snapshots, zero-copy clones via forks
+- Scheduling with OpenClaw cron or system cron
+
 ### tigris-s3-migration
 
 Migrate from AWS S3, GCS, or Azure Blob to Tigris with zero downtime.
