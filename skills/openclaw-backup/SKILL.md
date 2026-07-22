@@ -18,6 +18,13 @@ credentials, and session history. SQLite databases are backed up with
 `sqlite3 .backup` (a consistent copy), never by copying live database files —
 copying a live SQLite file produces corrupt backups.
 
+**Consistency scope.** Each SQLite database is captured internally consistent.
+Whole-tree consistency (every file from the exact same instant) is only
+guaranteed when the Gateway is idle, because files and databases are staged in
+separate passes. For a strict point-in-time image, back up while the Gateway
+is stopped, or use the bucket snapshot each run takes as the recovery point.
+The backup script prints a note if it detects a running Gateway.
+
 ## Requirements
 
 - `rclone` and `sqlite3` on PATH
@@ -57,9 +64,18 @@ scripts/backup.sh
 ```
 
 The script stages a consistent copy (SQLite via `.backup`, everything else
-via rsync), syncs it to `tigris:$TIGRIS_BACKUP_BUCKET/openclaw-state/`, and —
-if the `tigris` CLI is available and the bucket is snapshot-enabled — takes a
-named bucket snapshot so every backup run is a restorable point in time.
+via rsync), then `rclone sync`s it to
+`tigris:$TIGRIS_BACKUP_BUCKET/openclaw-state/` so the prefix is a faithful
+mirror of current state — a restore reproduces exactly what exists now, and
+deleted files do not reappear. Replaced or removed objects are not destroyed:
+they are archived under `tigris:$TIGRIS_BACKUP_BUCKET/archive/<timestamp>/`, so
+deletions remain recoverable. If the `tigris` CLI is available and the bucket
+is snapshot-enabled, each run also takes a named bucket snapshot as a
+restorable point in time; a snapshot failure is reported loudly rather than
+treated as success.
+
+Backup and restore share a lock, so a scheduled backup cannot run while a
+restore is mid-flight (and vice versa).
 
 Schedule it with OpenClaw's own cron
 ([docs](https://docs.openclaw.ai/automation/cron-jobs)) or system cron. Daily
@@ -76,8 +92,13 @@ scripts/restore.sh          # dry-run: shows what would change
 scripts/restore.sh --yes    # actually restores
 ```
 
-Stop the Gateway before restoring. The script refuses to run over a live
-state directory unless forced.
+Stop the Gateway before restoring. The restore downloads to a staging
+directory first and only swaps it into place once the transfer fully
+succeeds, so an interrupted restore never leaves partial live state. It then
+restores owner-only permissions (S3 does not carry Unix modes, so credential
+files would otherwise return world-readable). A best-effort check refuses to
+run while an OpenClaw process is detected; override a false positive with
+`OPENCLAW_RESTORE_FORCE=1`.
 
 ## Roll back to before a bad update
 
@@ -103,8 +124,9 @@ accumulated state — while the original keeps running untouched.
 
 - Never run `restore.sh --yes` without the user explicitly confirming they
   want the local state replaced.
-- Never back up while a restore is in progress, or vice versa.
-- Do not add `--delete`-style flags to the backup sync; removing remote data
-  requires the user to do it deliberately.
+- The scripts enforce a shared lock, but still never start a backup and a
+  restore against the same state deliberately in parallel.
+- The backup keeps superseded/deleted objects under the `archive/` prefix;
+  purging that prefix destroys recovery history, so leave it to the user.
 - Credentials in `rclone.conf` and the state directory are secrets; never
   print them.

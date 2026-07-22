@@ -70,3 +70,16 @@ None.
 **Security note:** the access key pair used for this test was pasted into the
 chat in plaintext; rotating it afterwards is recommended (not done here — key
 management was out of scope per the test rules).
+
+
+---
+
+## SUPERSEDED — scripts revised after review ()
+
+The results above validated the FIRST version of the scripts. After PR review
+(Cursor Bugbot + Greptile), both scripts were rewritten to fix: atomic
+download-then-swap restore, owner-only mode restoration, mkdir-based lock
+(portable; flock is Linux-only), `rclone sync --backup-dir` (faithful mirror +
+deletes archived), loud snapshot-failure reporting, trailing-slash and symlink
+handling, and self-excluded process checks. **The rewritten scripts need a
+fresh end-to-end test run before publish.**
