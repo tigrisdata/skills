@@ -25,6 +25,8 @@ separate passes. For a strict point-in-time image, back up while the Gateway
 is stopped, or use the bucket snapshot each run takes as the recovery point.
 The backup script prints a note if it detects a running Gateway.
 
+**Object-storage limitations.** Symlinks are dereferenced (their target content is stored), and Unix execute bits are not preserved across an S3 round-trip. Anything relying on execute bits in the state tree (for example skill scripts) should be reinstalled rather than restored.
+
 ## Requirements
 
 - `rclone` and `sqlite3` on PATH

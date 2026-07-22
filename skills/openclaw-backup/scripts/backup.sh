@@ -16,18 +16,21 @@ command -v sqlite3 >/dev/null || { echo "error: sqlite3 not found on PATH" >&2; 
 [ -d "$STATE_DIR" ] || { echo "error: state dir not found: $STATE_DIR" >&2; exit 1; }
 
 # Portable mutex (mkdir is atomic on macOS and Linux; flock is Linux-only).
-# Prevents a scheduled backup and a restore from touching state at once.
 if ! mkdir "$LOCKDIR" 2>/dev/null; then
   echo "error: another openclaw-backup/restore appears to be running" >&2
   echo "       (lock: $LOCKDIR). Remove it if you're sure it is stale." >&2
   exit 1
 fi
+# Install cleanup BEFORE allocating staging, so a mktemp failure can't leak the
+# lock. STAGING is empty until assigned; cleanup tolerates that.
+STAGING=""
+cleanup() { [ -n "$STAGING" ] && rm -rf "$STAGING"; rmdir "$LOCKDIR" 2>/dev/null || true; }
+trap cleanup EXIT
 STAGING="$(mktemp -d "${TMPDIR:-/tmp}/openclaw-backup.XXXXXX")"
-trap 'rm -rf "$STAGING"; rmdir "$LOCKDIR" 2>/dev/null || true' EXIT
 
 # Advisory only: with a live Gateway, files and databases are captured in
 # separate passes, so a whole-tree copy may mix moments. Each database stays
-# internally consistent (.backup); prefer running while the Gateway is idle.
+# internally consistent; prefer running while the Gateway is idle.
 if pgrep -f "openclaw" | grep -vxq -e "$$" -e "$PPID" 2>/dev/null; then
   echo "note: an OpenClaw process may be running. Per-database backups stay"  >&2
   echo "      consistent, but files and databases are captured in separate"   >&2
@@ -37,18 +40,25 @@ fi
 echo "==> Staging consistent copy of $STATE_DIR"
 
 # 1) Everything except SQLite files (and their journals/WALs, which belong to
-#    the live database and must not be backed up raw).
-rsync -a \
+#    the live database). --copy-links dereferences symlinks so their content is
+#    captured (object storage has no symlink concept; they would be dropped).
+rsync -a --copy-links \
   --exclude '*.sqlite' --exclude '*.sqlite3' --exclude '*.db' \
   --exclude '*-wal' --exclude '*-shm' --exclude '*-journal' \
   --exclude 'logs/' \
   "$STATE_DIR"/ "$STAGING"/
 
-# 2) SQLite databases via the backup API (consistent even while in use).
+# 2) SQLite databases via VACUUM INTO — a consistent copy (like .backup) whose
+#    destination is a proper SQL string literal, so paths with quotes or spaces
+#    are handled by doubling single quotes rather than fragile dot-command
+#    quoting.
 while IFS= read -r -d '' db; do
   rel="${db#"$STATE_DIR"/}"
-  mkdir -p "$STAGING/$(dirname "$rel")"
-  sqlite3 "$db" ".backup '$STAGING/$rel'"
+  dest="$STAGING/$rel"
+  mkdir -p "$(dirname "$dest")"
+  q="'"
+  esc="${dest//$q/$q$q}"
+  sqlite3 "$db" "VACUUM INTO '$esc'"
   echo "    sqlite backup: $rel"
 done < <(find "$STATE_DIR" \( -name '*.sqlite' -o -name '*.sqlite3' -o -name '*.db' \) -type f -print0)
 
@@ -57,18 +67,16 @@ printf '{"backed_up_at":"%s","source_host":"%s","state_dir":"%s"}\n' \
   "$STAMP" "$(hostname)" "$STATE_DIR" > "$STAGING/.tigris-backup.json"
 
 echo "==> Syncing to $REMOTE:$BUCKET/$PREFIX/"
-# `sync` makes the prefix a faithful mirror of current state, so a restore
-# reproduces exactly what exists now (deleted files do not reappear).
-# `--backup-dir` preserves every replaced or removed object under a timestamped
-# archive prefix, so nothing is ever destroyed — deletes are recoverable, just
-# not part of the live restore set.
+# `sync` makes the prefix a faithful mirror of current state (deleted files do
+# not reappear on restore). `--backup-dir` preserves every replaced or removed
+# object under a timestamped archive prefix, so nothing is destroyed.
 rclone sync "$STAGING" "$REMOTE:$BUCKET/$PREFIX/" \
   --backup-dir "$REMOTE:$BUCKET/archive/$STAMP" \
   --transfers 8 --checksum
 
 # 4) Bucket snapshot, if the tigris CLI is available. Distinguish "CLI absent"
-#    (fine, skip) from "command failed" (surfaced loudly — a silent failure
-#    would leave no recovery point while the run looked successful).
+#    (skip) from "command failed" (surfaced loudly — a silent failure would
+#    leave no recovery point while the run looked successful).
 if command -v tigris >/dev/null; then
   if snap_err="$(tigris snapshots take "$BUCKET" "backup-$STAMP" 2>&1)"; then
     echo "==> Snapshot taken: backup-$STAMP"
@@ -76,8 +84,6 @@ if command -v tigris >/dev/null; then
     echo "WARNING: snapshot step FAILED — the file backup uploaded, but no" >&2
     echo "         snapshot recovery point was created. Error was:"         >&2
     echo "         $snap_err"                                               >&2
-    echo "         (Check the bucket is snapshot-enabled and the tigris"    >&2
-    echo "         CLI is authenticated.)"                                  >&2
   fi
 else
   echo "note: tigris CLI not found; skipping bucket snapshot" >&2
