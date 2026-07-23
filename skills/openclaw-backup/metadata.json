@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "organization": "Tigris Data",
+  "date": "July 2026",
+  "abstract": "Back up and restore the OpenClaw personal-assistant state directory (config, workspace, sessions, skills) to a Tigris bucket. Covers consistent backups with safe SQLite handling (backup API, WAL/journal exclusion), dry-run-by-default restore with a pre-restore safety copy, point-in-time rollback via bucket snapshots, zero-copy assistant clones via forks, and scheduling with OpenClaw cron or system cron.",
+  "references": [
+    "https://www.tigrisdata.com/docs/",
+    "https://www.tigrisdata.com/docs/snapshots/",
+    "https://www.tigrisdata.com/docs/forks/",
+    "https://docs.openclaw.ai/automation/cron-jobs"
+  ]
+}
